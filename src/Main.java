@@ -1,21 +1,36 @@
-import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 public class Main {
 
-  public static void main(String[] args) throws IOException {
+  private static String regexTitle = "[A-Za-zА-Яа-я]+\\s.+?(?=—)";
+
+  public static void main(String[] args) throws FileNotFoundException {
+
+    PrintWriter writer = new PrintWriter("C:/Users/savin/Desktop/test2.txt");
     try {
-      Document doc = Jsoup.connect("https://en.wikipedia.org/wiki/Information_asymmetry").get();
+      Document doc = Jsoup.connect("https://ficbook.net/readfic/9351982/23970356").get();
 
-      //get page title
-//      String title = doc.title();
-//      System.out.println("title : " + title);
-      Elements mainHeaderElements = doc.select("div#mw-content-text.mw-content-ltr");
-      System.out.println(mainHeaderElements.text());
+      String title = doc.title();
 
-    } catch (IOException e) {
+      System.out.println("title : " + title);
+      Elements mainHeaderElements = doc.select("div#content");
+
+      String text = mainHeaderElements.text();
+      String[] SS = text.split("\\.");
+
+      for (int i = 0; i < SS.length; i++) {
+        String write2 = SS[i] + ".";
+         writer.write(write2);
+      //  System.out.println(write2);
+      }
+      writer.flush();
+      writer.close();
+
+    } catch (Exception e) {
       e.printStackTrace();
     }
   }

@@ -31,7 +31,7 @@ public class Main extends javax.swing.JFrame {
     //Set the new frame location
     frame.setLocation(x, y);
     setLocation(x, y);
-    super.setTitle("Список дел на Java");
+    super.setTitle("Java HTML parser");
 //    setIconImage(getImage());
   }
 

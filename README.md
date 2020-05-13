@@ -1,6 +1,6 @@
 # Java_HTML_Parser
 
-![Image description](image.png)
+![Image description](image2.png)
 
 ## FAQ & Troubleshooting
 

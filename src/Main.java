@@ -52,11 +52,14 @@ public class Main extends javax.swing.JFrame {
         String jText = jTextField1.getText();
         if (jText.matches(regexURL)) {
           try {
-            PrintWriter writer = new PrintWriter(
-                "C:/Users/" + userName + "/Desktop/bookFromFicbook.txt");
             Document doc = Jsoup.connect(jText).get();
             String title = doc.title();
-            System.out.println("title : " + title);
+            int titleIndex = title.indexOf("—");
+            String textTitle = title.substring(0, titleIndex - 1);
+            PrintWriter writer = new PrintWriter(
+                "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
+            System.out.println(textTitle);
+
             Elements mainHeaderElements = doc.select("div#content");
 
             String text = mainHeaderElements.text();
@@ -91,13 +94,14 @@ public class Main extends javax.swing.JFrame {
       String jText = jTextField1.getText();
       if (jText.matches(regexURL)) {
         try {
-          PrintWriter writer = new PrintWriter(
-              "C:/Users/" + userName + "/Desktop/bookFromFicbook.txt");
           Document doc = Jsoup.connect(jText).get();
-
           String title = doc.title();
+          int titleIndex = title.indexOf("—");
+          String textTitle = title.substring(0, titleIndex - 1);
+          PrintWriter writer = new PrintWriter(
+              "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
+          System.out.println(textTitle);
 
-          System.out.println("title : " + title);
           Elements mainHeaderElements = doc.select("div#content");
 
           String text = mainHeaderElements.text();

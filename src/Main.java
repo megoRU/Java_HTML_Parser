@@ -58,7 +58,7 @@ public class Main extends javax.swing.JFrame {
             String textTitle = title.substring(0, titleIndex - 1);
             PrintWriter writer = new PrintWriter(
                 "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
-            System.out.println(textTitle);
+           // System.out.println(textTitle);
 
             Elements mainHeaderElements = doc.select("div#content");
 
@@ -100,7 +100,7 @@ public class Main extends javax.swing.JFrame {
           String textTitle = title.substring(0, titleIndex - 1);
           PrintWriter writer = new PrintWriter(
               "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
-          System.out.println(textTitle);
+        //  System.out.println(textTitle);
 
           Elements mainHeaderElements = doc.select("div#content");
 

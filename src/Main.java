@@ -63,12 +63,11 @@ public class Main extends javax.swing.JFrame {
             Elements mainHeaderElements = doc.select("div#content");
 
             String text = mainHeaderElements.text();
-            String[] SS = text.split("\\.");
+            String[] SS = text.split("\\.\\s+");
 
             for (int i = 0; i < SS.length; i++) {
               String write2 = SS[i] + ".";
-              writer.write(write2);
-              //System.out.println(write2);
+              writer.write(write2 + "\n");
             }
             assert writer != null;
             writer.flush();
@@ -105,11 +104,11 @@ public class Main extends javax.swing.JFrame {
           Elements mainHeaderElements = doc.select("div#content");
 
           String text = mainHeaderElements.text();
-          String[] SS = text.split("\\.");
+          String[] SS = text.split("\\.\\s+");
 
           for (int i = 0; i < SS.length; i++) {
             String write2 = SS[i] + ".";
-            writer.write(write2);
+            writer.write(write2 + "\n");
             //System.out.println(write2);
           }
           assert writer != null;

@@ -2,7 +2,11 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.PrintWriter;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -65,6 +69,7 @@ public class Main extends javax.swing.JFrame {
             String text = mainHeaderElements.text();
             String[] SS = text.split("\\.\\s+");
 
+
             for (int i = 0; i < SS.length; i++) {
               String write2 = SS[i] + ".";
               writer.write(write2 + "\n");
@@ -72,6 +77,27 @@ public class Main extends javax.swing.JFrame {
             assert writer != null;
             writer.flush();
             writer.close();
+
+            StringBuilder builder = new StringBuilder();
+            BufferedReader br = new BufferedReader(
+                new FileReader("C:/Users/savin/Desktop/Aennye shed lagi.txt"));
+            for (; ; ) {
+              String line = br.readLine();
+              if (line == null) {
+                break;
+              }
+              // builder.append(line + "\n");
+              System.out.println(builder.append(line + "\n"));
+              FileWriter writerFile = new FileWriter(
+                  "C:/Users/savin/Desktop/Aennye shed lagi.txt", true);
+              BufferedWriter bufferWriter = new BufferedWriter(writerFile);
+
+
+                bufferWriter.write(text);
+                bufferWriter.close();
+                break;
+            }
+
             jTextField1.setText("");
           } catch (Exception ex) {
             ex.printStackTrace();

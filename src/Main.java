@@ -19,8 +19,7 @@ import org.jsoup.select.Elements;
 public class Main extends javax.swing.JFrame {
 
   private static final String userName = System.getProperty("user.name");
-  private static final String regexTitle = "[A-Za-zА-Яа-я]+\\s.+?(?=—)";
-  private static final String regexURL = "(https?:\\/\\/)?([\\da-z\\.-]+)\\.[a-z]+\\/[a-z]+\\/[0-9]+\\/[0-9]+";
+  private static final String regexURL = "(https?:\\/\\/)?([\\da-z\\.-]+)\\.[a-z]+\\/[a-z]+\\/[0-9]+\\/[0-9]+[\\\\#]+[a-z]+[\\\\_]+[a-z]+";
 
   private javax.swing.JTextField jTextField1;
 
@@ -80,21 +79,23 @@ public class Main extends javax.swing.JFrame {
 
             StringBuilder builder = new StringBuilder();
             BufferedReader br = new BufferedReader(
-                new FileReader("C:/Users/savin/Desktop/Aennye shed lagi.txt"));
+                new FileReader("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt"));
             for (; ; ) {
               String line = br.readLine();
               if (line == null) {
                 break;
               }
               // builder.append(line + "\n");
-              System.out.println(builder.append(line + "\n"));
+             // System.out.println(builder.append(line + "\n"));
               FileWriter writerFile = new FileWriter(
-                  "C:/Users/savin/Desktop/Aennye shed lagi.txt", true);
+                  "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt", true);
               BufferedWriter bufferWriter = new BufferedWriter(writerFile);
-
-
-                bufferWriter.write(text);
-                bufferWriter.close();
+              String[] SS2 = text.split("\\.\\s+");
+              for (int i = 0; i < SS2.length; i++) {
+                String write22 = SS2[i] + ".";
+                bufferWriter.write(write22 + "\n");
+              }
+              bufferWriter.close();
                 break;
             }
 
@@ -125,28 +126,52 @@ public class Main extends javax.swing.JFrame {
           String textTitle = title.substring(0, titleIndex - 1);
           PrintWriter writer = new PrintWriter(
               "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
-        //  System.out.println(textTitle);
+          // System.out.println(textTitle);
 
           Elements mainHeaderElements = doc.select("div#content");
 
           String text = mainHeaderElements.text();
           String[] SS = text.split("\\.\\s+");
 
+
           for (int i = 0; i < SS.length; i++) {
             String write2 = SS[i] + ".";
             writer.write(write2 + "\n");
-            //System.out.println(write2);
           }
           assert writer != null;
           writer.flush();
           writer.close();
+
+          StringBuilder builder = new StringBuilder();
+          BufferedReader br = new BufferedReader(
+              new FileReader("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt"));
+          for (; ; ) {
+            String line = br.readLine();
+            if (line == null) {
+              break;
+            }
+            // builder.append(line + "\n");
+            // System.out.println(builder.append(line + "\n"));
+            FileWriter writerFile = new FileWriter(
+                "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt", true);
+            BufferedWriter bufferWriter = new BufferedWriter(writerFile);
+            String[] SS2 = text.split("\\.\\s+");
+            for (int i = 0; i < SS2.length; i++) {
+              String write22 = SS2[i] + ".";
+              bufferWriter.write(write22 + "\n");
+            }
+            bufferWriter.close();
+            break;
+          }
+
           jTextField1.setText("");
         } catch (Exception ex) {
           ex.printStackTrace();
-         }
-        } else if (!jText.matches(regexURL)) {
-          jTextField1.setText("URL адрес неверный!");
         }
+      } else if (!jText.matches(regexURL))
+      {
+        jTextField1.setText("URL адрес неверный!");
+      }
     });
 
     jTextField1.addActionListener(action);

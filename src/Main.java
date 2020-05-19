@@ -19,7 +19,9 @@ import org.jsoup.select.Elements;
 public class Main extends javax.swing.JFrame {
 
   private static final String userName = System.getProperty("user.name");
-  private static final String regexURL = "(https?:\\/\\/)?([\\da-z\\.-]+)\\.[a-z]+\\/[a-z]+\\/[0-9]+\\/[0-9]+[\\\\#]+[a-z]+[\\\\_]+[a-z]+";
+  private static final String regexURL = "(https?:\\/\\/)?([\\dfincbook\\.-]+)\\.[a-z]+\\/[a-z]+\\/[0-9]+\\/[0-9]+[\\\\#]+[a-z]+[\\\\_]+[a-z]+";
+  private static final String regexURL2 = "(https?:\\/\\/)?([\\dfincbook\\.-]+).+";
+  private static final String regexURL3 = "(https?:\\/\\/)?([\\dfincbook\\.-]+)\\.[a-zA-Z0-9]*.[a-z]{3}.?[a-zA-Z0-9]+\\/[0-9]+.+";
 
   private javax.swing.JTextField jTextField1;
 
@@ -53,7 +55,7 @@ public class Main extends javax.swing.JFrame {
       @Override
       public void actionPerformed(ActionEvent e) {
         String jText = jTextField1.getText();
-        if (jText.matches(regexURL)) {
+        if (jText.matches(regexURL) || jText.matches(regexURL2) || jText.matches(regexURL3)) {
           try {
             Document doc = Jsoup.connect(jText).get();
             String title = doc.title();
@@ -73,11 +75,10 @@ public class Main extends javax.swing.JFrame {
               String write2 = SS[i] + ".";
               writer.write(write2 + "\n");
             }
-            assert writer != null;
             writer.flush();
             writer.close();
 
-            StringBuilder builder = new StringBuilder();
+           // StringBuilder builder = new StringBuilder();
             BufferedReader br = new BufferedReader(
                 new FileReader("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt"));
             for (; ; ) {
@@ -86,13 +87,12 @@ public class Main extends javax.swing.JFrame {
                 break;
               }
               // builder.append(line + "\n");
-             // System.out.println(builder.append(line + "\n"));
               FileWriter writerFile = new FileWriter(
                   "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt", true);
               BufferedWriter bufferWriter = new BufferedWriter(writerFile);
-              String[] SS2 = text.split("\\.\\s+");
-              for (int i = 0; i < SS2.length; i++) {
-                String write22 = SS2[i] + ".";
+              String[] textFromHTML = text.split("\\.\\s+");
+              for (int i = 0; i < textFromHTML.length; i++) {
+                String write22 = textFromHTML[i] + ".";
                 bufferWriter.write(write22 + "\n");
               }
               bufferWriter.close();
@@ -103,7 +103,7 @@ public class Main extends javax.swing.JFrame {
           } catch (Exception ex) {
             ex.printStackTrace();
           }
-        } else if (!jText.matches(regexURL))
+        } else if (!jText.matches(regexURL) || !jText.matches(regexURL2) || !jText.matches(regexURL3))
         {
           jTextField1.setText("URL адрес неверный!");
         }
@@ -118,7 +118,7 @@ public class Main extends javax.swing.JFrame {
 
     jButton1.addActionListener(evt -> {
       String jText = jTextField1.getText();
-      if (jText.matches(regexURL)) {
+      if (jText.matches(regexURL) && jText.matches(regexURL2) && jText.matches(regexURL3)) {
         try {
           Document doc = Jsoup.connect(jText).get();
           String title = doc.title();
@@ -131,18 +131,15 @@ public class Main extends javax.swing.JFrame {
           Elements mainHeaderElements = doc.select("div#content");
 
           String text = mainHeaderElements.text();
-          String[] SS = text.split("\\.\\s+");
+          String[] textFromHTML = text.split("\\.\\s+");
 
-
-          for (int i = 0; i < SS.length; i++) {
-            String write2 = SS[i] + ".";
+          for (int i = 0; i < textFromHTML.length; i++) {
+            String write2 = textFromHTML[i] + ".";
             writer.write(write2 + "\n");
           }
-          assert writer != null;
           writer.flush();
           writer.close();
 
-          StringBuilder builder = new StringBuilder();
           BufferedReader br = new BufferedReader(
               new FileReader("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt"));
           for (; ; ) {
@@ -168,7 +165,7 @@ public class Main extends javax.swing.JFrame {
         } catch (Exception ex) {
           ex.printStackTrace();
         }
-      } else if (!jText.matches(regexURL))
+      } else if (!jText.matches(regexURL) || !jText.matches(regexURL2) || !jText.matches(regexURL3))
       {
         jTextField1.setText("URL адрес неверный!");
       }

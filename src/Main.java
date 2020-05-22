@@ -4,6 +4,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -61,42 +62,36 @@ public class Main extends javax.swing.JFrame {
             String title = doc.title();
             int titleIndex = title.indexOf("—");
             String textTitle = title.substring(0, titleIndex - 1);
-            PrintWriter writer = new PrintWriter(
-                "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
-           // System.out.println(textTitle);
 
-            Elements mainHeaderElements = doc.select("div#content");
-
-            String text = mainHeaderElements.text();
-            String[] SS = text.split("\\.\\s+");
-
-
-            for (int i = 0; i < SS.length; i++) {
-              String write2 = SS[i] + ".";
-              writer.write(write2 + "\n");
+            File file = new File("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
+            if(!file.exists()) {
+              PrintWriter writer = new PrintWriter(
+                  "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
+              writer.println("");
+              writer.close();
             }
-            writer.flush();
-            writer.close();
-
-           // StringBuilder builder = new StringBuilder();
-            BufferedReader br = new BufferedReader(
-                new FileReader("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt"));
-            for (; ; ) {
-              String line = br.readLine();
+            if(file.exists()){
+              BufferedReader br = new BufferedReader(
+                  new FileReader("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt"));
+              for (; ; ) {
+                String line = br.readLine();
               if (line == null) {
                 break;
               }
-              // builder.append(line + "\n");
-              FileWriter writerFile = new FileWriter(
-                  "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt", true);
-              BufferedWriter bufferWriter = new BufferedWriter(writerFile);
-              String[] textFromHTML = text.split("\\.\\s+");
-              for (int i = 0; i < textFromHTML.length; i++) {
-                String write22 = textFromHTML[i] + ".";
-                bufferWriter.write(write22 + "\n");
-              }
-              bufferWriter.close();
+                // builder.append(line + "\n");
+                Elements mainHeaderElements = doc.select("div#content");
+                String text = mainHeaderElements.text();
+                FileWriter writerFile = new FileWriter(
+                    "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt", true);
+                BufferedWriter bufferWriter = new BufferedWriter(writerFile);
+                String[] textFromHTML = text.split("\\.\\s+");
+                for (int i = 0; i < textFromHTML.length; i++) {
+                  String write22 = textFromHTML[i] + ".";
+                  bufferWriter.write(write22 + "\n");
+                }
+                bufferWriter.close();
                 break;
+              }
             }
 
             jTextField1.setText("");
@@ -124,41 +119,36 @@ public class Main extends javax.swing.JFrame {
           String title = doc.title();
           int titleIndex = title.indexOf("—");
           String textTitle = title.substring(0, titleIndex - 1);
-          PrintWriter writer = new PrintWriter(
-              "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
-          // System.out.println(textTitle);
 
-          Elements mainHeaderElements = doc.select("div#content");
-
-          String text = mainHeaderElements.text();
-          String[] textFromHTML = text.split("\\.\\s+");
-
-          for (int i = 0; i < textFromHTML.length; i++) {
-            String write2 = textFromHTML[i] + ".";
-            writer.write(write2 + "\n");
+          File file = new File("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
+          if(!file.exists()) {
+            PrintWriter writer = new PrintWriter(
+                "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
+            writer.println("");
+            writer.close();
           }
-          writer.flush();
-          writer.close();
-
-          BufferedReader br = new BufferedReader(
-              new FileReader("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt"));
-          for (; ; ) {
-            String line = br.readLine();
-            if (line == null) {
+          if(file.exists()){
+            BufferedReader br = new BufferedReader(
+                new FileReader("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt"));
+            for (; ; ) {
+              String line = br.readLine();
+              if (line == null) {
+                break;
+              }
+              // builder.append(line + "\n");
+              Elements mainHeaderElements = doc.select("div#content");
+              String text = mainHeaderElements.text();
+              FileWriter writerFile = new FileWriter(
+                  "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt", true);
+              BufferedWriter bufferWriter = new BufferedWriter(writerFile);
+              String[] textFromHTML = text.split("\\.\\s+");
+              for (int i = 0; i < textFromHTML.length; i++) {
+                String write22 = textFromHTML[i] + ".";
+                bufferWriter.write(write22 + "\n");
+              }
+              bufferWriter.close();
               break;
             }
-            // builder.append(line + "\n");
-            // System.out.println(builder.append(line + "\n"));
-            FileWriter writerFile = new FileWriter(
-                "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt", true);
-            BufferedWriter bufferWriter = new BufferedWriter(writerFile);
-            String[] SS2 = text.split("\\.\\s+");
-            for (int i = 0; i < SS2.length; i++) {
-              String write22 = SS2[i] + ".";
-              bufferWriter.write(write22 + "\n");
-            }
-            bufferWriter.close();
-            break;
           }
 
           jTextField1.setText("");

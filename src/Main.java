@@ -113,7 +113,7 @@ public class Main extends javax.swing.JFrame {
 
     jButton1.addActionListener(evt -> {
       String jText = jTextField1.getText();
-      if (jText.matches(regexURL) && jText.matches(regexURL2) && jText.matches(regexURL3)) {
+      if (jText.matches(regexURL) || jText.matches(regexURL2) || jText.matches(regexURL3)) {
         try {
           Document doc = Jsoup.connect(jText).get();
           String title = doc.title();

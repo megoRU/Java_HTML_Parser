@@ -12,5 +12,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="jsoup-1.13.1" level="project" />
+    <orderEntry type="library" name="cloud-bypass" level="project" />
   </component>
 </module>

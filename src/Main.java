@@ -58,26 +58,31 @@ public class Main extends javax.swing.JFrame {
         String jText = jTextField1.getText();
         if (jText.matches(regexURL) || jText.matches(regexURL2) || jText.matches(regexURL3)) {
           try {
-            Document doc = Jsoup.connect(jText).get();
+            Document doc = Jsoup.connect(jText)
+                .data("query", "Java")
+                .userAgent("Mozilla")
+                .cookie("auth", "token")
+                .timeout(50000)
+                .get();
             String title = doc.title();
             int titleIndex = title.indexOf("—");
             String textTitle = title.substring(0, titleIndex - 1);
 
             File file = new File("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
-            if(!file.exists()) {
+            if (!file.exists()) {
               PrintWriter writer = new PrintWriter(
                   "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
               writer.println("");
               writer.close();
             }
-            if(file.exists()){
+            if (file.exists()) {
               BufferedReader br = new BufferedReader(
                   new FileReader("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt"));
               for (; ; ) {
                 String line = br.readLine();
-              if (line == null) {
-                break;
-              }
+                if (line == null) {
+                  break;
+                }
                 // builder.append(line + "\n");
                 Elements mainHeaderElements = doc.select("div#content");
                 String text = mainHeaderElements.text();
@@ -98,8 +103,8 @@ public class Main extends javax.swing.JFrame {
           } catch (Exception ex) {
             ex.printStackTrace();
           }
-        } else if (!jText.matches(regexURL) || !jText.matches(regexURL2) || !jText.matches(regexURL3))
-        {
+        } else if (!jText.matches(regexURL) || !jText.matches(regexURL2) || !jText
+            .matches(regexURL3)) {
           jTextField1.setText("URL адрес неверный!");
         }
       }
@@ -107,7 +112,7 @@ public class Main extends javax.swing.JFrame {
 
     jTextField1.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
-          jTextField1ActionPerformed(evt);
+        jTextField1ActionPerformed(evt);
       }
     });
 
@@ -115,19 +120,24 @@ public class Main extends javax.swing.JFrame {
       String jText = jTextField1.getText();
       if (jText.matches(regexURL) || jText.matches(regexURL2) || jText.matches(regexURL3)) {
         try {
-          Document doc = Jsoup.connect(jText).get();
+          Document doc = Jsoup.connect(jText)
+              .data("query", "Java")
+              .userAgent("Mozilla")
+              .cookie("auth", "token")
+              .timeout(50000)
+              .get();
           String title = doc.title();
           int titleIndex = title.indexOf("—");
           String textTitle = title.substring(0, titleIndex - 1);
 
           File file = new File("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
-          if(!file.exists()) {
+          if (!file.exists()) {
             PrintWriter writer = new PrintWriter(
                 "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
             writer.println("");
             writer.close();
           }
-          if(file.exists()){
+          if (file.exists()) {
             BufferedReader br = new BufferedReader(
                 new FileReader("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt"));
             for (; ; ) {
@@ -155,14 +165,13 @@ public class Main extends javax.swing.JFrame {
         } catch (Exception ex) {
           ex.printStackTrace();
         }
-      } else if (!jText.matches(regexURL) || !jText.matches(regexURL2) || !jText.matches(regexURL3))
-      {
+      } else if (!jText.matches(regexURL) || !jText.matches(regexURL2) || !jText
+          .matches(regexURL3)) {
         jTextField1.setText("URL адрес неверный!");
       }
     });
 
     jTextField1.addActionListener(action);
-
 
     jPanel1.setBackground(new java.awt.Color(0, 128, 128));
 
@@ -173,7 +182,6 @@ public class Main extends javax.swing.JFrame {
     jButton1.setFont(new java.awt.Font("Tahoma", Font.BOLD, 12)); // NOI18N
     jButton1.setText("Отправить");
     jButton1.setFocusable(false);
-
 
     jButton2.setFont(new java.awt.Font("Tahoma", Font.BOLD, 12)); // NOI18N
     jButton2.setText("Очистка");
@@ -235,10 +243,11 @@ public class Main extends javax.swing.JFrame {
         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
                 javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-    ); pack();
+    );
+    pack();
   }
 
-  private void jTextField1ActionPerformed(ActionEvent evt){
+  private void jTextField1ActionPerformed(ActionEvent evt) {
   }
 
   public void jsoup() throws FileNotFoundException {
@@ -268,24 +277,24 @@ public class Main extends javax.swing.JFrame {
     }
   }
 
-    public static void main(String[] args) {
-      try {
-        for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager
-            .getInstalledLookAndFeels()) {
-          if ("Nimbus".equals(info.getName())) {
-            javax.swing.UIManager.setLookAndFeel(info.getClassName());
-            break;
-          }
+  public static void main(String[] args) {
+    try {
+      for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager
+          .getInstalledLookAndFeels()) {
+        if ("Nimbus".equals(info.getName())) {
+          javax.swing.UIManager.setLookAndFeel(info.getClassName());
+          break;
         }
-      } catch (ClassNotFoundException | IllegalAccessException | UnsupportedLookAndFeelException | InstantiationException ex) {
-        java.util.logging.Logger.getLogger(Main.class.getName())
-            .log(java.util.logging.Level.SEVERE, null, ex);
       }
-
-      java.awt.EventQueue.invokeLater(new Runnable() {
-        public void run() {
-          new Main().setVisible(true);
-        }
-      });
+    } catch (ClassNotFoundException | IllegalAccessException | UnsupportedLookAndFeelException | InstantiationException ex) {
+      java.util.logging.Logger.getLogger(Main.class.getName())
+          .log(java.util.logging.Level.SEVERE, null, ex);
     }
- }
+
+    java.awt.EventQueue.invokeLater(new Runnable() {
+      public void run() {
+        new Main().setVisible(true);
+      }
+    });
+  }
+}

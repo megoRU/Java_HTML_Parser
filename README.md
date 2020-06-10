@@ -1,4 +1,4 @@
-![](https://travis-ci.com/megoRU/Java_HTML_Parser.svg?branch=master)
+[![Build Status](https://travis-ci.com/megoRU/Java_HTML_Parser.svg?branch=master)](https://travis-ci.com/megoRU/Java_HTML_Parser)
 # Java_HTML_Parser
 
 ![Image description](image2.png)

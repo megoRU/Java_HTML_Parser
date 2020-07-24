@@ -56,57 +56,7 @@ public class Main extends javax.swing.JFrame {
       @Override
       public void actionPerformed(ActionEvent e) {
         String jText = jTextField1.getText();
-        if (jText.matches(regexURL) || jText.matches(regexURL2) || jText.matches(regexURL3)) {
-          try {
-            Document doc = Jsoup.connect(jText)
-                .data("query", "Java")
-                .userAgent("Mozilla")
-                .cookie("auth", "token")
-                .timeout(50000)
-                .get();
-            String title = doc.title();
-            int titleIndex = title.indexOf("—");
-            String textTitle = title.substring(0, titleIndex - 1);
-
-            File file = new File("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
-            if (!file.exists()) {
-              PrintWriter writer = new PrintWriter(
-                  "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
-              writer.println("");
-              writer.close();
-            }
-            if (file.exists()) {
-              BufferedReader br = new BufferedReader(
-                  new FileReader("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt"));
-              for (; ; ) {
-                String line = br.readLine();
-                if (line == null) {
-                  break;
-                }
-                // builder.append(line + "\n");
-                Elements mainHeaderElements = doc.select("div#content");
-                String text = mainHeaderElements.text();
-                FileWriter writerFile = new FileWriter(
-                    "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt", true);
-                BufferedWriter bufferWriter = new BufferedWriter(writerFile);
-                String[] textFromHTML = text.split("\\.\\s+");
-                for (int i = 0; i < textFromHTML.length; i++) {
-                  String write22 = textFromHTML[i] + ".";
-                  bufferWriter.write(write22 + "\n");
-                }
-                bufferWriter.close();
-                break;
-              }
-            }
-
-            jTextField1.setText("");
-          } catch (Exception ex) {
-            ex.printStackTrace();
-          }
-        } else if (!jText.matches(regexURL) || !jText.matches(regexURL2) || !jText
-            .matches(regexURL3)) {
-          jTextField1.setText("URL адрес неверный!");
-        }
+        parsing(jText);
       }
     };
 
@@ -118,57 +68,7 @@ public class Main extends javax.swing.JFrame {
 
     jButton1.addActionListener(evt -> {
       String jText = jTextField1.getText();
-      if (jText.matches(regexURL) || jText.matches(regexURL2) || jText.matches(regexURL3)) {
-        try {
-          Document doc = Jsoup.connect(jText)
-              .data("query", "Java")
-              .userAgent("Mozilla")
-              .cookie("auth", "token")
-              .timeout(50000)
-              .get();
-          String title = doc.title();
-          int titleIndex = title.indexOf("—");
-          String textTitle = title.substring(0, titleIndex - 1);
-
-          File file = new File("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
-          if (!file.exists()) {
-            PrintWriter writer = new PrintWriter(
-                "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
-            writer.println("");
-            writer.close();
-          }
-          if (file.exists()) {
-            BufferedReader br = new BufferedReader(
-                new FileReader("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt"));
-            for (; ; ) {
-              String line = br.readLine();
-              if (line == null) {
-                break;
-              }
-              // builder.append(line + "\n");
-              Elements mainHeaderElements = doc.select("div#content");
-              String text = mainHeaderElements.text();
-              FileWriter writerFile = new FileWriter(
-                  "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt", true);
-              BufferedWriter bufferWriter = new BufferedWriter(writerFile);
-              String[] textFromHTML = text.split("\\.\\s+");
-              for (int i = 0; i < textFromHTML.length; i++) {
-                String write22 = textFromHTML[i] + ".";
-                bufferWriter.write(write22 + "\n");
-              }
-              bufferWriter.close();
-              break;
-            }
-          }
-
-          jTextField1.setText("");
-        } catch (Exception ex) {
-          ex.printStackTrace();
-        }
-      } else if (!jText.matches(regexURL) || !jText.matches(regexURL2) || !jText
-          .matches(regexURL3)) {
-        jTextField1.setText("URL адрес неверный!");
-      }
+      parsing(jText);
     });
 
     jTextField1.addActionListener(action);
@@ -248,6 +148,62 @@ public class Main extends javax.swing.JFrame {
   }
 
   private void jTextField1ActionPerformed(ActionEvent evt) {
+  }
+
+
+  //TODO:
+  public void parsing(String textFromJText) {
+    if (textFromJText.matches(regexURL) || textFromJText.matches(regexURL2) || textFromJText.matches(regexURL3)) {
+      try {
+        Document doc = Jsoup.connect(textFromJText)
+            .data("query", "Java")
+            .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36")
+            .cookie("auth", "token")
+            .get();
+        String title = doc.title();
+        int titleIndex = title.indexOf("—");
+        String textTitle = title.substring(0, titleIndex - 1);
+
+        File file = new File("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
+        if (!file.exists()) {
+          PrintWriter writer = new PrintWriter(
+              "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
+          writer.println("");
+          writer.close();
+        }
+        if (file.exists()) {
+          BufferedReader br = new BufferedReader(
+              new FileReader("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt"));
+          for (; ; ) {
+            String line = br.readLine();
+            if (line == null) {
+              break;
+            }
+            // builder.append(line + "\n");
+            Elements mainHeaderElements = doc.select("div#content");
+            String text = mainHeaderElements.text();
+            FileWriter writerFile = new FileWriter(
+                "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt", true);
+            BufferedWriter bufferWriter = new BufferedWriter(writerFile);
+            String[] textFromHTML = text.split("\\.\\s+");
+            for (int i = 0; i < textFromHTML.length; i++) {
+              String write22 = textFromHTML[i] + ".";
+              bufferWriter.write(write22 + "\n");
+            }
+            bufferWriter.close();
+            writerFile.close();
+            break;
+          }
+        }
+
+        jTextField1.setText("");
+      } catch (Exception ex) {
+        ex.printStackTrace();
+      }
+    } else if (!textFromJText.matches(regexURL) || !textFromJText.matches(regexURL2) || !textFromJText
+        .matches(regexURL3)) {
+      jTextField1.setText("URL адрес неверный!");
+    }
   }
 
   public void jsoup() throws FileNotFoundException {

@@ -60,11 +60,7 @@ public class Main extends javax.swing.JFrame {
       }
     };
 
-    jTextField1.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        jTextField1ActionPerformed(evt);
-      }
-    });
+    jTextField1.addActionListener(evt -> jTextField1ActionPerformed(evt));
 
     jButton1.addActionListener(evt -> {
       String jText = jTextField1.getText();
@@ -86,9 +82,7 @@ public class Main extends javax.swing.JFrame {
     jButton2.setFont(new java.awt.Font("Tahoma", Font.BOLD, 12)); // NOI18N
     jButton2.setText("Очистка");
     jButton2.setFocusable(false);
-    jButton2.addActionListener(e -> {
-      jTextField1.setText("");
-    });
+    jButton2.addActionListener(e -> jTextField1.setText(""));
 
     javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
     jPanel1.setLayout(jPanel1Layout);
@@ -186,8 +180,8 @@ public class Main extends javax.swing.JFrame {
                 "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt", true);
             BufferedWriter bufferWriter = new BufferedWriter(writerFile);
             String[] textFromHTML = text.split("\\.\\s+");
-            for (int i = 0; i < textFromHTML.length; i++) {
-              String write22 = textFromHTML[i] + ".";
+            for (String s : textFromHTML) {
+              String write22 = s + ".";
               bufferWriter.write(write22 + "\n");
             }
             bufferWriter.close();
@@ -206,33 +200,6 @@ public class Main extends javax.swing.JFrame {
     }
   }
 
-  public void jsoup() throws FileNotFoundException {
-    PrintWriter writer = new PrintWriter("C:/Users/savin/Desktop/bookFromFicbook.txt");
-    try {
-      String jText = jTextField1.getText();
-      Document doc = Jsoup.connect(jText).get();
-
-      String title = doc.title();
-
-      System.out.println("title : " + title);
-      Elements mainHeaderElements = doc.select("div#content");
-
-      String text = mainHeaderElements.text();
-      String[] SS = text.split("\\.");
-
-      for (int i = 0; i < SS.length; i++) {
-        String write2 = SS[i] + ".";
-        writer.write(write2);
-        System.out.println(write2);
-      }
-      writer.flush();
-      writer.close();
-
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
   public static void main(String[] args) {
     try {
       for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager
@@ -247,10 +214,6 @@ public class Main extends javax.swing.JFrame {
           .log(java.util.logging.Level.SEVERE, null, ex);
     }
 
-    java.awt.EventQueue.invokeLater(new Runnable() {
-      public void run() {
-        new Main().setVisible(true);
-      }
-    });
+    java.awt.EventQueue.invokeLater(() -> new Main().setVisible(true));
   }
 }

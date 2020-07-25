@@ -179,7 +179,7 @@ public class Main extends javax.swing.JFrame {
             FileWriter writerFile = new FileWriter(
                 "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt", true);
             BufferedWriter bufferWriter = new BufferedWriter(writerFile);
-            String[] textFromHTML = text.split("\\.\\s+");
+            String[] textFromHTML = text.split("([?!.])\\s+");
             for (String s : textFromHTML) {
               String write22 = s + ".";
               bufferWriter.write(write22 + "\n");
@@ -189,6 +189,12 @@ public class Main extends javax.swing.JFrame {
             break;
           }
         }
+//TODO
+//        String test = s;
+//        System.out.println(test);
+//        int lastChar = s.length();
+//        int charS = lastChar + 1;
+//        String write22 = s + s.substring(charS, lastChar);
 
         jTextField1.setText("");
       } catch (Exception ex) {

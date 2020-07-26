@@ -175,31 +175,30 @@ public class Main extends javax.swing.JFrame {
             }
             // builder.append(line + "\n");
             Elements mainHeaderElements = doc.select("div#content");
+            Elements titleBook = doc.select(".title-area.text-center");
+
             String text = mainHeaderElements.text();
+            String titleBooktext = titleBook.text();
+
             FileWriter writerFile = new FileWriter(
                 "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt", true);
             BufferedWriter bufferWriter = new BufferedWriter(writerFile);
-            System.out.println(text);
-            String[] textFromHTML = text.split("(.+?[?!.])\\s+");
-            for (String s : textFromHTML) {
-              String test = s;
-              int lastChar = test.length();
-              int charS = lastChar + 1;
-              String write22 = s + s.substring(charS, lastChar);
-              bufferWriter.write(write22);
+            String[] textFromHTML = text.split(".+?[?!.]\\s+", 1);
+            //String lineSeparator = System.getProperty("line.separator");
+
+            bufferWriter.write(titleBooktext);
+            for (int j = 0; j < textFromHTML.length; j++) {
+//              System.out.println(test);
+//              int lastChar = test.length();
+//              int charS = lastChar + 1;
+//               String write22 = test + test.substring(charS, lastChar);
+              bufferWriter.write(textFromHTML[j]);
             }
             bufferWriter.close();
             writerFile.close();
             break;
           }
         }
-//TODO
-//        String test = s;
-//        System.out.println(test);
-//        int lastChar = s.length();
-//        int charS = lastChar + 1;
-//        String write22 = s + s.substring(charS, lastChar);
-
         jTextField1.setText("");
       } catch (Exception ex) {
         ex.printStackTrace();

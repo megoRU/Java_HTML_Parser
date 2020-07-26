@@ -32,14 +32,14 @@ public class Main extends javax.swing.JFrame {
     initComponents();
     Toolkit toolkit = Toolkit.getDefaultToolkit();
     Dimension screenSize = toolkit.getScreenSize();
-    JFrame frame = new JFrame("Demo");
+    JFrame frame = new JFrame("ficbook.net_Parser");
     frame.setSize(550, 600);
     int x = (screenSize.width - frame.getWidth()) / 2;
     int y = (screenSize.height - frame.getHeight()) / 2;
     //Set the new frame location
     frame.setLocation(x, y);
     setLocation(x, y);
-    super.setTitle("Java HTML parser");
+    super.setTitle("ficbook.net_Parser");
     setIconImage(getImage());
   }
 

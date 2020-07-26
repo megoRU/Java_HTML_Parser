@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.com/megoRU/ficbook.com_Parser.svg?branch=master)](https://travis-ci.com/megoRU/ficbook.com_Parser)
-# Java_HTML_Parser
+# Java ficbook.net Parser
 
 ![Image description](image2.png)
 

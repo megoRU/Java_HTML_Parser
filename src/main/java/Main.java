@@ -5,10 +5,10 @@ import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JFrame;
@@ -144,8 +144,6 @@ public class Main extends javax.swing.JFrame {
   private void jTextField1ActionPerformed(ActionEvent evt) {
   }
 
-
-  //TODO:
   public void parsing(String textFromJText) {
     if (textFromJText.matches(regexURL) || textFromJText.matches(regexURL2) || textFromJText.matches(regexURL3)) {
       try {
@@ -162,45 +160,40 @@ public class Main extends javax.swing.JFrame {
         if (!file.exists()) {
           PrintWriter writer = new PrintWriter(
               "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
-          writer.println("");
+         // writer.println("");
           writer.close();
         }
         if (file.exists()) {
           BufferedReader br = new BufferedReader(
-              new FileReader("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt"));
+              new FileReader("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt", StandardCharsets.UTF_8));
           for (; ; ) {
             String line = br.readLine();
             if (line == null) {
               break;
             }
-            // builder.append(line + "\n");
+          }
+            br.close();
             Elements mainHeaderElements = doc.select("div#content");
             Elements titleBook = doc.select(".title-area.text-center");
-
             String text = mainHeaderElements.text();
-            String titleBooktext = titleBook.text();
-
+            String titleBooktext = titleBook.text(); //название главы
             FileWriter writerFile = new FileWriter(
-                "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt", true);
+                            "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt",
+                StandardCharsets.UTF_8, true);
             BufferedWriter bufferWriter = new BufferedWriter(writerFile);
             String[] textFromHTML = text.split("\\.\\s+");
             String lineSeparator = System.getProperty("line.separator");
 
-            //bufferWriter.write(titleBooktext);
-            bufferWriter.write(lineSeparator);
+          bufferWriter.write(lineSeparator);
+          bufferWriter.write(titleBooktext); //Название главы
             for (int j = 0; j < textFromHTML.length; j++) {
-//              System.out.println(test);
-//              int lastChar = test.length();
-//              int charS = lastChar + 1;
-//               String write22 = test + test.substring(charS, lastChar);
               String writeToTxt = textFromHTML[j] + ".";
               bufferWriter.write(writeToTxt + lineSeparator);
             }
             bufferWriter.close();
             writerFile.close();
-            break;
-          }
         }
+
         jTextField1.setText("");
       } catch (Exception ex) {
         ex.printStackTrace();

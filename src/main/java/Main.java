@@ -183,16 +183,17 @@ public class Main extends javax.swing.JFrame {
             FileWriter writerFile = new FileWriter(
                 "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt", true);
             BufferedWriter bufferWriter = new BufferedWriter(writerFile);
-            String[] textFromHTML = text.split(".+?[?!.]\\s+", 1);
-            //String lineSeparator = System.getProperty("line.separator");
+            String[] textFromHTML = text.split("[?!.]\\s+\\s+");
+            String lineSeparator = System.getProperty("line.separator");
 
             bufferWriter.write(titleBooktext);
+            bufferWriter.write(lineSeparator);
             for (int j = 0; j < textFromHTML.length; j++) {
 //              System.out.println(test);
 //              int lastChar = test.length();
 //              int charS = lastChar + 1;
 //               String write22 = test + test.substring(charS, lastChar);
-              bufferWriter.write(textFromHTML[j]);
+              bufferWriter.write(textFromHTML[j] + lineSeparator);
             }
             bufferWriter.close();
             writerFile.close();

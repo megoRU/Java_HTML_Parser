@@ -19,7 +19,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-public class Main extends javax.swing.JFrame {
+public class Main extends JFrame {
 
   private static final String userName = System.getProperty("user.name");
   private static final String regexURL = "(https?:\\/\\/)?([\\dfincbook\\.-]+)\\.[a-z]+\\/[a-z]+\\/[0-9]+\\/[0-9]+[\\\\#]+[a-z]+[\\\\_]+[a-z]+";
@@ -34,11 +34,11 @@ public class Main extends javax.swing.JFrame {
     Dimension screenSize = toolkit.getScreenSize();
     JFrame frame = new JFrame("ficbook.net_Parser");
     frame.setSize(550, 600);
-    int x = (screenSize.width - frame.getWidth()) / 2;
-    int y = (screenSize.height - frame.getHeight()) / 2;
-    //Set the new frame location
-    frame.setLocation(x, y);
-    setLocation(x, y);
+    setResizable(false);
+    Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+    this.setLocation(
+        dim.width/2-this.getSize().width/2,
+        dim.height/2-this.getSize().height/2);
     super.setTitle("ficbook.net_Parser");
     setIconImage(getImage());
   }

@@ -179,10 +179,14 @@ public class Main extends javax.swing.JFrame {
             FileWriter writerFile = new FileWriter(
                 "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt", true);
             BufferedWriter bufferWriter = new BufferedWriter(writerFile);
-            String[] textFromHTML = text.split("([?!.])\\s+");
+            System.out.println(text);
+            String[] textFromHTML = text.split("(.+?[?!.])\\s+");
             for (String s : textFromHTML) {
-              String write22 = s + ".";
-              bufferWriter.write(write22 + "\n");
+              String test = s;
+              int lastChar = test.length();
+              int charS = lastChar + 1;
+              String write22 = s + s.substring(charS, lastChar);
+              bufferWriter.write(write22);
             }
             bufferWriter.close();
             writerFile.close();

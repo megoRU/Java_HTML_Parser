@@ -19,18 +19,18 @@
       <artifactId>jsoup</artifactId>
       <version>1.13.1</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/net.sourceforge.htmlunit/htmlunit -->
-    <dependency>
-      <groupId>net.sourceforge.htmlunit</groupId>
-      <artifactId>htmlunit</artifactId>
-      <version>2.37.0</version>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/fluent-hc -->
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>fluent-hc</artifactId>
-      <version>4.5.12</version>
-    </dependency>
+<!--    &lt;!&ndash; https://mvnrepository.com/artifact/net.sourceforge.htmlunit/htmlunit &ndash;&gt;-->
+<!--    <dependency>-->
+<!--      <groupId>net.sourceforge.htmlunit</groupId>-->
+<!--      <artifactId>htmlunit</artifactId>-->
+<!--      <version>2.37.0</version>-->
+<!--    </dependency>-->
+<!--    &lt;!&ndash; https://mvnrepository.com/artifact/org.apache.httpcomponents/fluent-hc &ndash;&gt;-->
+<!--    <dependency>-->
+<!--      <groupId>org.apache.httpcomponents</groupId>-->
+<!--      <artifactId>fluent-hc</artifactId>-->
+<!--      <version>4.5.12</version>-->
+<!--    </dependency>-->
 
   </dependencies>
 

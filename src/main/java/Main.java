@@ -153,11 +153,13 @@ public class Main extends JFrame {
   }
 
   public void parsing(String textFromJText) {
-    if (textFromJText.matches(regexURL) || textFromJText.matches(regexURL2) || textFromJText.matches(regexURL3)) {
+    if (textFromJText.matches(regexURL) || textFromJText.matches(regexURL2) || textFromJText
+        .matches(regexURL3)) {
       try {
         Document doc = Jsoup.connect(textFromJText)
             .data("query", "Java")
-            .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36")
+            .userAgent(
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36")
             .cookie("auth", "token")
             .get();
         String title = doc.title();
@@ -168,45 +170,47 @@ public class Main extends JFrame {
         if (!file.exists()) {
           PrintWriter writer = new PrintWriter(
               "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
-         // writer.println("");
+          // writer.println("");
           writer.close();
         }
         if (file.exists()) {
           BufferedReader br = new BufferedReader(
-              new FileReader("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt", StandardCharsets.UTF_8));
+              new FileReader("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt",
+                  StandardCharsets.UTF_8));
           for (; ; ) {
             String line = br.readLine();
             if (line == null) {
               break;
             }
           }
-            br.close();
-            Elements mainHeaderElements = doc.select("div#content");
-            Elements titleBook = doc.select(".title-area.text-center");
-            String text = mainHeaderElements.text();
-            String titleBooktext = titleBook.text(); //название главы
-            FileWriter writerFile = new FileWriter(
-                            "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt",
-                StandardCharsets.UTF_8, true);
-            BufferedWriter bufferWriter = new BufferedWriter(writerFile);
-            String[] textFromHTML = text.split("\\.\\s+");
-            String lineSeparator = System.getProperty("line.separator");
+          br.close();
+          Elements mainHeaderElements = doc.select("div#content");
+          Elements titleBook = doc.select(".title-area.text-center");
+          String text = mainHeaderElements.text();
+          String titleBooktext = titleBook.text(); //название главы
+          FileWriter writerFile = new FileWriter(
+              "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt",
+              StandardCharsets.UTF_8, true);
+          BufferedWriter bufferWriter = new BufferedWriter(writerFile);
+          String[] textFromHTML = text.split("\\.\\s+");
+          String lineSeparator = System.getProperty("line.separator");
 
           bufferWriter.write(lineSeparator);
           bufferWriter.write(titleBooktext); //Название главы
-            for (int j = 0; j < textFromHTML.length; j++) {
-              String writeToTxt = textFromHTML[j] + ".";
-              bufferWriter.write(writeToTxt + lineSeparator);
-            }
-            bufferWriter.close();
-            writerFile.close();
+          for (int j = 0; j < textFromHTML.length; j++) {
+            String writeToTxt = textFromHTML[j] + ".";
+            bufferWriter.write(writeToTxt + lineSeparator);
+          }
+          bufferWriter.close();
+          writerFile.close();
         }
 
         jTextField1.setText("");
       } catch (Exception ex) {
         ex.printStackTrace();
       }
-    } else if (!textFromJText.matches(regexURL) || !textFromJText.matches(regexURL2) || !textFromJText
+    } else if (!textFromJText.matches(regexURL) || !textFromJText.matches(regexURL2)
+        || !textFromJText
         .matches(regexURL3)) {
       jTextField1.setText("URL адрес неверный!");
     }

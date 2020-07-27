@@ -1,3 +1,4 @@
+import com.ninja_beans.crawler.helper.cloudflare.IuamSolver;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
@@ -8,13 +9,21 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpClient.Redirect;
+import java.net.http.HttpClient.Version;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.UnsupportedLookAndFeelException;
+import lombok.val;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -152,28 +161,73 @@ public class Main extends JFrame {
   private void jTextField1ActionPerformed(ActionEvent evt) {
   }
 
-  public void parsing(String textFromJText) {
-    if (textFromJText.matches(regexURL) || textFromJText.matches(regexURL2) || textFromJText.matches(regexURL3)) {
-      try {
-        Document doc = Jsoup.connect(textFromJText)
-            .data("query", "Java")
-            .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36")
-            .cookie("auth", "token")
-            .get();
-        String title = doc.title();
-        int titleIndex = title.indexOf("—");
-        String textTitle = title.substring(0, titleIndex - 1);
+//  public static class App {
+//    public static void main(final String[] args) throws IOException, InterruptedException {
+//      var url = "megolox.ru";
+//      var result = IuamSolver.solve(url);
+//
+//      // 1. Create HttpClient
+//      var client = HttpClient
+//          .newBuilder()
+//          .version(Version.HTTP_1_1)
+//          .followRedirects(Redirect.NORMAL)
+//          .cookieHandler(result.getCookieManager()).build();
+//
+//      // 2. Send the request and get the response
+//      var request = HttpRequest.newBuilder().header("Accept", "*/*")
+//          .header("User-Agent", result.getResponse().getUserAgent())
+//          .GET()
+//          .uri(URI.create(url))
+//          .build();
+//      var response = client.send(request, BodyHandlers.ofString(StandardCharsets.UTF_8));
+//
+//      // 3. Parse the response
+//      var doc = Jsoup.parse(response.body(), url);
+//      var elm = doc.getElementById("title");
+//      System.out.println(doc.title());
+//      System.out.println(elm.html());
+//    }
+//  }
 
-        File file = new File("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
+  public void parsing(String textFromJText) {
+      try {
+
+        var url = textFromJText;
+        var result = IuamSolver.solve(url);
+
+        // 1. Create HttpClient
+        var client = HttpClient
+            .newBuilder()
+            .version(Version.HTTP_1_1)
+            .followRedirects(Redirect.NORMAL)
+            .cookieHandler(result.getCookieManager()).build();
+
+        // 2. Send the request and get the response
+        var request = HttpRequest.newBuilder().header("Accept", "*/*")
+            .header("User-Agent", result.getResponse().getUserAgent())
+            .GET()
+            .uri(URI.create(url))
+            .build();
+        var response = client.send(request, BodyHandlers.ofString(StandardCharsets.UTF_8));
+
+        // 3. Parse the response
+        var docc = Jsoup.parse(response.body(), url);
+        var elm = docc.getElementById("title");
+        System.out.println(docc.title());
+        System.out.println(elm.html());
+
+
+
+        File file = new File("C:/Users/" + userName + "/Desktop/"  + ".txt");
         if (!file.exists()) {
           PrintWriter writer = new PrintWriter(
-              "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
+              "C:/Users/" + userName + "/Desktop/"  + ".txt");
          // writer.println("");
           writer.close();
         }
         if (file.exists()) {
           BufferedReader br = new BufferedReader(
-              new FileReader("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt", StandardCharsets.UTF_8));
+              new FileReader("C:/Users/" + userName + "/Desktop/" + ".txt", StandardCharsets.UTF_8));
           for (; ; ) {
             String line = br.readLine();
             if (line == null) {
@@ -181,23 +235,14 @@ public class Main extends JFrame {
             }
           }
             br.close();
-            Elements mainHeaderElements = doc.select("div#content");
-            Elements titleBook = doc.select(".title-area.text-center");
-            String text = mainHeaderElements.text();
-            String titleBooktext = titleBook.text(); //название главы
             FileWriter writerFile = new FileWriter(
-                            "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt",
+                            "C:/Users/" + userName + "/Desktop/" + ".txt",
                 StandardCharsets.UTF_8, true);
             BufferedWriter bufferWriter = new BufferedWriter(writerFile);
-            String[] textFromHTML = text.split("\\.\\s+");
             String lineSeparator = System.getProperty("line.separator");
 
           bufferWriter.write(lineSeparator);
-          bufferWriter.write(titleBooktext); //Название главы
-            for (int j = 0; j < textFromHTML.length; j++) {
-              String writeToTxt = textFromHTML[j] + ".";
-              bufferWriter.write(writeToTxt + lineSeparator);
-            }
+
             bufferWriter.close();
             writerFile.close();
         }
@@ -206,10 +251,7 @@ public class Main extends JFrame {
       } catch (Exception ex) {
         ex.printStackTrace();
       }
-    } else if (!textFromJText.matches(regexURL) || !textFromJText.matches(regexURL2) || !textFromJText
-        .matches(regexURL3)) {
-      jTextField1.setText("URL адрес неверный!");
-    }
+
   }
 
   public static void main(String[] args) {

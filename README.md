@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/megoRU/ficbook.net_Parser.svg?branch=master)](https://travis-ci.com/megoRU/ficbook.net_Parser)
+[![Build Status](https://travis-ci.com/megoRU/ficbook.net_Parser.svg?branch=master)](https://travis-ci.com/megoRU/ficbook.net_Parser) ![GitHub All Releases](https://img.shields.io/github/downloads/megoRU/ficbook.net_Parser/total)
 
 # Java ficbook.net Parser
 

@@ -2,6 +2,8 @@
 
 # Java ficbook.net Parser
 
+#### [LICENSE CC BY-NC-SA 4.0](https://github.com/megoRU/ficbook.net_Parser/blob/master/LICENSE)
+
 ![Image description](image2.png)
 
 ## FAQ & Troubleshooting

@@ -22,9 +22,9 @@ import org.jsoup.select.Elements;
 public class Main extends JFrame {
 
   private static final String userName = System.getProperty("user.name");
-  private static final String regexURL = "(https?:\\/\\/)?([\\dfincbook\\.-]+)\\.[a-z]+\\/[a-z]+\\/[0-9]+\\/[0-9]+[\\\\#]+[a-z]+[\\\\_]+[a-z]+";
-  private static final String regexURL2 = "(https?:\\/\\/)?([\\dfincbook\\.-]+).+";
-  private static final String regexURL3 = "(https?:\\/\\/)?([\\dfincbook\\.-]+)\\.[a-zA-Z0-9]*.[a-z]{3}.?[a-zA-Z0-9]+\\/[0-9]+.+";
+  private static final String regexURL = "https?:\\/\\/?[\\dfincbook.net\\/readfic]+\\/[0-9]+\\/[0-9]+[#a-z_]+";
+  private static final String regexURL2 = "https?:\\/\\/?[\\dfincbook.net\\/readfic]+\\/[0-9]+\\/[0-9]+";
+  private static final String regexURL3 = "https?:\\/\\/?[\\dfincbook.net\\/readfic]+\\/[0-9]+";
 
   private javax.swing.JTextField jTextField1;
 
@@ -153,9 +153,14 @@ public class Main extends JFrame {
   }
 
   public void parsing(String textFromJText) {
-    if (textFromJText.matches(regexURL) || textFromJText.matches(regexURL2) || textFromJText
-        .matches(regexURL3)) {
-      try {
+    if (!textFromJText.matches(regexURL) && !textFromJText.matches(regexURL2) && !textFromJText.matches(regexURL3)) {
+      jTextField1.setText("URL адрес неверный!");
+      return;
+    }
+    try {
+      if (textFromJText.matches(regexURL) || textFromJText.matches(regexURL2) || textFromJText
+          .matches(regexURL3)) {
+
         Document doc = Jsoup.connect(textFromJText)
             .data("query", "Java")
             .userAgent(
@@ -197,6 +202,7 @@ public class Main extends JFrame {
 
           bufferWriter.write(lineSeparator);
           bufferWriter.write(titleBooktext); //Название главы
+          bufferWriter.write(lineSeparator);
           for (int j = 0; j < textFromHTML.length; j++) {
             String writeToTxt = textFromHTML[j] + ".";
             bufferWriter.write(writeToTxt + lineSeparator);
@@ -204,15 +210,14 @@ public class Main extends JFrame {
           bufferWriter.close();
           writerFile.close();
         }
-
         jTextField1.setText("");
-      } catch (Exception ex) {
-        ex.printStackTrace();
+        jTextField1.setText("Успешно");
+        Thread.sleep(1500);
+        jTextField1.setText("");
       }
-    } else if (!textFromJText.matches(regexURL) || !textFromJText.matches(regexURL2)
-        || !textFromJText
-        .matches(regexURL3)) {
-      jTextField1.setText("URL адрес неверный!");
+
+    } catch (Exception e) {
+    e.printStackTrace();
     }
   }
 

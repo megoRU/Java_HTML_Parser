@@ -10,6 +10,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -155,6 +159,7 @@ public class Main extends JFrame {
   public void parsing(String textFromJText) {
     if (!textFromJText.matches(regexURL) && !textFromJText.matches(regexURL2) && !textFromJText.matches(regexURL3)) {
       jTextField1.setText("URL адрес неверный!");
+      jTextField1.setText("");
       return;
     }
     try {
@@ -188,6 +193,7 @@ public class Main extends JFrame {
               break;
             }
           }
+          String lineSeparator = System.getProperty("line.separator");
           br.close();
           Elements mainHeaderElements = doc.select("div#content");
           Elements titleBook = doc.select(".title-area.text-center");
@@ -197,15 +203,13 @@ public class Main extends JFrame {
               "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt",
               StandardCharsets.UTF_8, true);
           BufferedWriter bufferWriter = new BufferedWriter(writerFile);
-          String[] textFromHTML = text.split("\\.\\s+");
-          String lineSeparator = System.getProperty("line.separator");
-
+          String[] textFromHTMLDotSplit = text.split("(?<=\\?)|(?<=\\.)"); //[\?]\s+ //^[\—]\s+ //(?=\?)|(?=\.)
           bufferWriter.write(lineSeparator);
           bufferWriter.write(titleBooktext); //Название главы
           bufferWriter.write(lineSeparator);
-          for (int j = 0; j < textFromHTML.length; j++) {
-            String writeToTxt = textFromHTML[j] + ".";
-            bufferWriter.write(writeToTxt + lineSeparator);
+          for (int j = 0; j < textFromHTMLDotSplit.length; j++) {
+           // String writeToTxt; getLastCharacter(textFromHTMLDotSplit[j])
+            bufferWriter.write(textFromHTMLDotSplit[j] + lineSeparator);
           }
           bufferWriter.close();
           writerFile.close();
@@ -220,6 +224,18 @@ public class Main extends JFrame {
     e.printStackTrace();
     }
   }
+
+//  public String getLastCharacter(String text) {
+//    int textFromMassive = text.lastIndexOf("?");
+//    int textFromMassive2 = text.lastIndexOf(".");
+//    if (textFromMassive2 != -1) {
+//      return "";
+//    }
+//    if (textFromMassive != -1) {
+//      return "";
+//    }
+//    return null;
+//  }
 
   public static void main(String[] args) {
     try {

@@ -8,12 +8,14 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.PrintWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -21,7 +23,6 @@ import javax.swing.JFrame;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 
 public class Main extends JFrame {
 
@@ -29,6 +30,7 @@ public class Main extends JFrame {
   private static final String regexURL = "https?:\\/\\/?[\\dfincbook.net\\/readfic]+\\/[0-9]+\\/[0-9]+[#a-z_]+";
   private static final String regexURL2 = "https?:\\/\\/?[\\dfincbook.net\\/readfic]+\\/[0-9]+\\/[0-9]+";
   private static final String regexURL3 = "https?:\\/\\/?[\\dfincbook.net\\/readfic]+\\/[0-9]+";
+  private static final String pathForHTML = "C:/Users/" + userName + "/Desktop/site.html";
 
   private javax.swing.JTextField jTextField1;
 
@@ -41,8 +43,8 @@ public class Main extends JFrame {
     setResizable(false);
     Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
     this.setLocation(
-        dim.width/2-this.getSize().width/2,
-        dim.height/2-this.getSize().height/2);
+        dim.width / 2 - this.getSize().width / 2,
+        dim.height / 2 - this.getSize().height / 2);
     super.setTitle("ficbook.net парсер");
     setIconImage(getImage());
   }
@@ -157,7 +159,8 @@ public class Main extends JFrame {
   }
 
   public void parsing(String textFromJText) {
-    if (!textFromJText.matches(regexURL) && !textFromJText.matches(regexURL2) && !textFromJText.matches(regexURL3)) {
+    if (!textFromJText.matches(regexURL) && !textFromJText.matches(regexURL2) && !textFromJText
+        .matches(regexURL3)) {
       jTextField1.setText("URL адрес неверный!");
       jTextField1.setText("");
       return;
@@ -169,73 +172,158 @@ public class Main extends JFrame {
         Document doc = Jsoup.connect(textFromJText)
             .data("query", "Java")
             .userAgent(
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36")
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36")
             .cookie("auth", "token")
             .get();
+        //Парсит название
         String title = doc.title();
-        int titleIndex = title.indexOf("—");
-        String textTitle = title.substring(0, titleIndex - 1);
+        String title2 = title.replaceAll(":", " ");
+        int titleIndex = title2.indexOf("—");
+        String textTitle = title2.substring(0, titleIndex - 1);
 
-        File file = new File("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
-        if (!file.exists()) {
-          PrintWriter writer = new PrintWriter(
-              "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
-          // writer.println("");
-          writer.close();
+        URL url;
+        InputStream is = null;
+        BufferedReader brs;
+        String lines;
+        //"Крадём html"
+        url = new URL(textFromJText);
+        is = url.openStream();  // throws an IOException
+        brs = new BufferedReader(new InputStreamReader(is));
+        BufferedWriter writers = new BufferedWriter(new FileWriter(pathForHTML,
+            StandardCharsets.UTF_8));
+
+        //TODO &nbsp; изменить для https://ficbook.net/readfic/9178691/23500218#part_content
+        // Вроде исправлено, надо проверять
+        //Сохраняем просто в файл site.html
+        while ((lines = brs.readLine()) != null) {
+          writers.write(lines.replaceAll("&nbsp;", "").trim() + System.getProperty("line.separator"));
         }
-        if (file.exists()) {
-          BufferedReader br = new BufferedReader(
-              new FileReader("C:/Users/" + userName + "/Desktop/" + textTitle + ".txt",
-                  StandardCharsets.UTF_8));
-          for (; ; ) {
-            String line = br.readLine();
-            if (line == null) {
-              break;
-            }
-          }
-          String lineSeparator = System.getProperty("line.separator");
-          br.close();
-          Elements mainHeaderElements = doc.select("div#content");
-          Elements titleBook = doc.select(".title-area.text-center");
-          String text = mainHeaderElements.text();
-          String titleBooktext = titleBook.text(); //название главы
-          FileWriter writerFile = new FileWriter(
-              "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt",
-              StandardCharsets.UTF_8, true);
-          BufferedWriter bufferWriter = new BufferedWriter(writerFile);
-          String[] textFromHTMLDotSplit = text.split("(?<=\\?)|(?<=\\.)"); //[\?]\s+ //^[\—]\s+ //(?=\?)|(?=\.)
-          bufferWriter.write(lineSeparator);
-          bufferWriter.write(titleBooktext); //Название главы
-          bufferWriter.write(lineSeparator);
-          for (int j = 0; j < textFromHTMLDotSplit.length; j++) {
-           // String writeToTxt; getLastCharacter(textFromHTMLDotSplit[j])
-            bufferWriter.write(textFromHTMLDotSplit[j] + lineSeparator);
-          }
-          bufferWriter.close();
-          writerFile.close();
+
+        is.close();
+        brs.close();
+        writers.close();
+
+        //Путь для сохранения почти готового результата
+        String pathBeforeSave = "C:/Users/" + userName + "/Desktop/" + textTitle + "NOT_FINAL" + ".txt";
+
+        //Возвращает индекс чтобы удалять до или после
+        int valueToDeleteFirst = linesFirst(pathForHTML); // + 3
+        delete(pathForHTML, pathBeforeSave, valueToDeleteFirst);
+
+        //Возвращает индекс чтобы удалять до или после
+        int valueToDeleteSecond = linesSecond(pathBeforeSave);
+
+        deleteSecond(pathBeforeSave,
+            "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt", valueToDeleteSecond);
+        //Удаление лишних файлов в процессе работы
+        Path path = Paths.get(pathBeforeSave);
+        Path path2 = Paths.get(pathForHTML);
+        try {
+          Files.deleteIfExists(path);
+          Files.deleteIfExists(path2);
+
+          jTextField1.setText("");
+          jTextField1.setText("Успешно");
+          Thread.sleep(1500);
+          jTextField1.setText("");
+        } catch (Exception exception) {
+          exception.printStackTrace();
         }
-        jTextField1.setText("");
-        jTextField1.setText("Успешно");
-        Thread.sleep(1500);
-        jTextField1.setText("");
       }
-
-    } catch (Exception e) {
-    e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
 
-//  public String getLastCharacter(String text) {
-//    int textFromMassive = text.lastIndexOf("?");
-//    int textFromMassive2 = text.lastIndexOf(".");
-//    if (textFromMassive2 != -1) {
-//      return "";
-//    }
-//    if (textFromMassive != -1) {
-//      return "";
-//    }
-//    return null;
+  public static void delete(String filePathIn, String filePathOut, int toRemove) {
+    int count = 0;
+    File inputFile = new File(filePathIn);
+    File tempFile = new File(filePathOut);
+    try {
+      BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+      BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile, true));
+      String currentLine;
+      while ((currentLine = reader.readLine()) != null) {
+        count++;
+        if (count < toRemove) {
+        }
+        if (count >= toRemove) {
+          writer.write(currentLine.trim() + System.getProperty("line.separator") );
+        }
+      }
+      writer.close();
+      reader.close();
+    } catch (IOException fileNotFoundException) {
+      fileNotFoundException.printStackTrace();
+    }
+  }
+
+  public static void deleteSecond(String filePathIn, String filePathOut, int toRemove) {
+    int count = 0;
+    File inputFile = new File(filePathIn);
+    File tempFile = new File(filePathOut);
+    try {
+      BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+      BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile,
+          StandardCharsets.UTF_8,true));
+      String currentLine;
+      while ((currentLine = reader.readLine()) != null) {
+        count++;
+        if (count > toRemove) {
+        }
+        if (count <= toRemove) {
+          writer.write(currentLine.trim() + System.getProperty("line.separator"));
+        }
+      }
+      writer.close();
+      reader.close();
+    } catch (IOException fileNotFoundException) {
+      fileNotFoundException.printStackTrace();
+    }
+  }
+
+//  public static File changeExtension(File f, String newExtension) {
+//    int i = f.getName().lastIndexOf('.');
+//    String name = f.getName().substring(0, i);
+//    f.renameTo(new File(f.getParent() + "/" + name + newExtension));
+//
+//    return new File(f.getParent() + "/" + name + newExtension);
 //  }
+
+  public static int linesFirst(String filePathIn) {
+    int lineCount = 0;
+    try {
+      File inputFile = new File(filePathIn);
+      BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+      String needWorld = "itemprop=\"articleBody\"";
+      while (!reader.readLine().trim().contains(needWorld)) {
+        lineCount++;
+      }
+
+      reader.close();
+      return lineCount;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return 0;
+  }
+
+  public static int linesSecond(String filePathIn) {
+    int lineCount = 0;
+    try {
+      File inputFile = new File(filePathIn);
+      BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+      String needWorld = "</article>";
+      while (!reader.readLine().trim().contains(needWorld)) {
+        lineCount++;
+      }
+      reader.close();
+      return lineCount;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return 0;
+  }
 
   public static void main(String[] args) {
     try {

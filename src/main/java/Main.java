@@ -11,9 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,7 +32,6 @@ public class Main extends JFrame {
   private static final String regexURL2 = "https?:\\/\\/?[\\dfincbook.net\\/readfic]+\\/[0-9]+\\/[0-9]+";
   private static final String regexURL3 = "https?:\\/\\/?[\\dfincbook.net\\/readfic]+\\/[0-9]+";
   private static final String pathForHTML = "C:/Users/" + userName + "/Desktop/site.txt";
-  private static ArrayList<String> linesBook = new ArrayList<>();
 
   private javax.swing.JTextField jTextField1;
 
@@ -183,7 +180,7 @@ public class Main extends JFrame {
         String title = doc.title();
         String title2 = title.replaceAll(":", " ");
         int titleIndex = title2.indexOf("—");
-        String textTitle =  title2.substring(0, titleIndex - 1);
+        String textTitle = title2.substring(0, titleIndex - 1);
 
         URL url;
         InputStream is = null;
@@ -191,19 +188,15 @@ public class Main extends JFrame {
         String lines;
         //"Крадём html"
         url = new URL(textFromJText);
-        is = url.openStream();  // throws an IOException
-        brs = new BufferedReader(new InputStreamReader(is));
-        //BufferedWriter writers = new BufferedWriter(new FileWriter(pathForHTML));
-        FileWriter writerFile = new FileWriter(pathForHTML);
+        is = url.openStream();
+        brs = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+        FileWriter writerFile = new FileWriter(pathForHTML, StandardCharsets.UTF_8);
 
-
-        //TODO &nbsp; изменить для https://ficbook.net/readfic/9178691/23500218#part_content
-        // Вроде исправлено, надо проверять
         //Сохраняем просто в файл site.html
         while ((lines = brs.readLine()) != null) {
-          writerFile.write(lines.replaceAll("&nbsp;", "").trim() + System.getProperty("line.separator"));
+          writerFile
+              .write(lines.replaceAll("&nbsp;", "").trim() + System.getProperty("line.separator"));
         }
-        System.out.println(Charset.defaultCharset().displayName());
 
         is.close();
         brs.close();
@@ -219,18 +212,8 @@ public class Main extends JFrame {
         //Возвращает индекс чтобы удалять до или после
         int valueToDeleteSecond = linesSecond(pathBeforeSave);
 
-        deleteSecond(pathBeforeSave,
-            "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt", valueToDeleteSecond);
+        deleteSecond(pathBeforeSave, "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt", valueToDeleteSecond);
 
-//        FileWriter writerFiles = new FileWriter(
-//            "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt");
-//        BufferedWriter bufferWriterrr = new BufferedWriter(writerFiles);
-//        System.out.println(linesBook.get(67));
-//        for (int j = 0; j < linesBook.size(); j++) {
-//          // String writeToTxt; getLastCharacter(textFromHTMLDotSplit[j])
-//          bufferWriterrr.write(linesBook.get(j));
-//        }
-//        bufferWriterrr.close();
         //Удаление лишних файлов в процессе работы
         Path path = Paths.get(pathBeforeSave);
         Path path2 = Paths.get(pathForHTML);
@@ -256,9 +239,8 @@ public class Main extends JFrame {
     File inputFile = new File(filePathIn);
     File tempFile = new File(filePathOut);
     try {
-      BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-      //BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile, StandardCharsets.UTF_8, true));
-      FileWriter writerFile = new FileWriter(tempFile, true);
+      BufferedReader reader = new BufferedReader(new FileReader(inputFile, StandardCharsets.UTF_8));
+      FileWriter writerFile = new FileWriter(tempFile, StandardCharsets.UTF_8, true);
       BufferedWriter bufferWriter = new BufferedWriter(writerFile);
 
       String currentLine;
@@ -267,7 +249,7 @@ public class Main extends JFrame {
         if (count < toRemove) {
         }
         if (count >= toRemove) {
-          bufferWriter.write(currentLine.trim() + System.getProperty("line.separator") );
+          bufferWriter.write(currentLine.trim() + System.getProperty("line.separator"));
         }
       }
       bufferWriter.close();
@@ -282,10 +264,8 @@ public class Main extends JFrame {
     File inputFile = new File(filePathIn);
     File tempFile = new File(filePathOut);
     try {
-     BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-     // BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile, StandardCharsets.UTF_8,true));
-    //  FileWriter writerFile = new FileWriter(tempFile, StandardCharsets.UTF_8, true);
-      FileWriter writerFile = new FileWriter(tempFile, true);
+      BufferedReader reader = new BufferedReader(new FileReader(inputFile, StandardCharsets.UTF_8));
+      FileWriter writerFile = new FileWriter(tempFile, StandardCharsets.UTF_8, true);
       BufferedWriter bufferWriter = new BufferedWriter(writerFile);
 
       String currentLine;
@@ -304,14 +284,6 @@ public class Main extends JFrame {
       fileNotFoundException.printStackTrace();
     }
   }
-
-//  public static File changeExtension(File f, String newExtension) {
-//    int i = f.getName().lastIndexOf('.');
-//    String name = f.getName().substring(0, i);
-//    f.renameTo(new File(f.getParent() + "/" + name + newExtension));
-//
-//    return new File(f.getParent() + "/" + name + newExtension);
-//  }
 
   public static int linesFirst(String filePathIn) {
     int lineCount = 0;

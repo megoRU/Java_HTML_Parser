@@ -4,7 +4,14 @@
 
 #### [LICENSE CC BY-NC-SA 4.0](https://github.com/megoRU/ficbook.net_Parser/blob/master/LICENSE)
 
-![Image description](image2.png)
+![Image description](app.png)
+
+## Запуск программы
+
+Двойным нажатием по .jar файлу. Если ничего не произошло, тогда нужно установить **только** JDK и настроить [PATH](https://javatutorial.net/set-java-home-windows-10)
+Чтобы всё заработало должно быть так:
+
+![Image description](cmdJavaVersion.png)
 
 ## FAQ & Troubleshooting
 

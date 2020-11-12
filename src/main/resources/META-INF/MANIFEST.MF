@@ -1,3 +1,5 @@
 Manifest-Version: 1.0
 Main-Class: Main
+Class-Path: commons-io-2.8.0.jar jsoup-1.13.1.jar jsoup-1.13.1.jar commo
+ ns-io-2.8.0.jar
 

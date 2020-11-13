@@ -194,33 +194,34 @@ public class Main extends JFrame {
         is = url.openStream();
         brs = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
         FileWriter writerFile = new FileWriter(pathForHTML, StandardCharsets.UTF_8);
-
         //Сохраняем просто в файл site.html
         //форматируем текст
         while ((lines = brs.readLine()) != null) {
-        writerFile.write(lines
-            .replaceAll("&nbsp;", "")
-            .trim()
-            .replaceAll("</b>", "")
-            .replaceAll("</div>", "")
-            .replaceAll("</i>", "")
-            .replaceAll("<i>", "")
-            .replaceAll("<p align=\"center\" style=\"margin: 0;\">", "")
-            .replaceAll("</p>", "")
-            .replaceAll("<div class=\"part-comment-bottom mx-10 mx-xs-5\">", "")
-            .replaceAll("<strong>", "")
-            .replaceAll("</strong>", "")
-            .replaceAll("<div class=\"urlize\">", "")
-            .replaceAll("<br />", "")
-            .replaceAll("<p align=\"right\" style=\"margin: 0;\"><b>", "")
-            .replaceAll("<p align=\"right\" style=\"margin: 0;\">", "")
-            + System.getProperty("line.separator"));
+          writerFile.write(lines
+              .replaceAll("&nbsp;", "")
+              .trim()
+              .replaceAll("</b>", "")
+              .replaceAll("</div>", "")
+              .replaceAll("</i>", "")
+              .replaceAll("<i>", "")
+              .replaceAll("<p align=\"center\" style=\"margin: 0;\">", "")
+              .replaceAll("</p>", "")
+              .replaceAll("<div class=\"part-comment-bottom mx-10 mx-xs-5\">", "")
+              .replaceAll("<strong>", "")
+              .replaceAll("</strong>", "")
+              .replaceAll("<div class=\"urlize\">", "")
+              .replaceAll("<br />", "")
+              .replaceAll("<p align=\"right\" style=\"margin: 0;\"><b>", "")
+              .replaceAll("<p align=\"right\" style=\"margin: 0;\">", "")
+              .replaceAll("</s>", "")
+              .replaceAll("<s>", "")
+
+              + System.getProperty("line.separator"));
         }
 
         is.close();
         brs.close();
         writerFile.close();
-
         //Путь для сохранения почти готового результата
         String pathBeforeSave = "C:/Users/" + userName + "/Desktop/" + textTitle + "NOT_FINAL" + ".txt";
 
@@ -267,21 +268,18 @@ public class Main extends JFrame {
       while ((currentLine = reader.readLine()) != null) {
         count++;
         if (count < toRemove) {
-
+          continue;
         }
         if (count > toRemove) {
           if (first < 1) {
-            first++;
-            int length = currentLine.length();
-            int symbol = currentLine.lastIndexOf(">") + 1;
-            String firstLine = currentLine.substring(symbol, length);
+            String firstLine = currentLine.replaceAll("data-is-adult=\"1\" itemprop=\"articleBody\">", "");
             bufferWriter.write(firstLine + System.getProperty("line.separator"));
-            continue;
+            bufferWriter.write(System.getProperty("line.separator"));
           }
           if (first > 1) {
             bufferWriter.write(currentLine.trim() + System.getProperty("line.separator"));
           }
-          bufferWriter.write(currentLine.trim() + System.getProperty("line.separator"));
+          first++;
         }
       }
       bufferWriter.close();
@@ -306,7 +304,6 @@ public class Main extends JFrame {
         if (count > toRemove) {
         }
         if (count <= toRemove) {
-          //linesBook.add(currentLine.trim() + System.getProperty("line.separator"));
           bufferWriter.write(currentLine.trim() + System.getProperty("line.separator"));
         }
       }
@@ -345,7 +342,7 @@ public class Main extends JFrame {
         lineCount++;
       }
       reader.close();
-      return lineCount - 2;
+      return lineCount - 2; //Зачем. Но лучше не трогать.
     } catch (Exception e) {
       e.printStackTrace();
     }

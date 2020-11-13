@@ -16,7 +16,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -31,6 +30,7 @@ public class Main extends JFrame {
   private static final String regexURL = "https?:\\/\\/?[\\dfincbook.net\\/readfic]+\\/[0-9]+\\/[0-9]+[#a-z_]+";
   private static final String regexURL2 = "https?:\\/\\/?[\\dfincbook.net\\/readfic]+\\/[0-9]+\\/[0-9]+";
   private static final String regexURL3 = "https?:\\/\\/?[\\dfincbook.net\\/readfic]+\\/[0-9]+";
+  private static final String regexURL4 = "https?:\\/\\/?[\\dfincbook.net\\/readfic]+\\/[0-9]+.+";
   private static final String pathForHTML = "C:/Users/" + userName + "/Desktop/site.txt";
 
   private javax.swing.JTextField jTextField1;
@@ -160,15 +160,19 @@ public class Main extends JFrame {
   }
 
   public void parsing(String textFromJText) {
-    if (!textFromJText.matches(regexURL) && !textFromJText.matches(regexURL2) && !textFromJText
-        .matches(regexURL3)) {
+    if (!textFromJText.matches(regexURL)
+        && !textFromJText.matches(regexURL2)
+        && !textFromJText.matches(regexURL3)
+        && !textFromJText.matches(regexURL4)) {
       jTextField1.setText("URL адрес неверный!");
       jTextField1.setText("");
       return;
     }
     try {
-      if (textFromJText.matches(regexURL) || textFromJText.matches(regexURL2) || textFromJText
-          .matches(regexURL3)) {
+      if (textFromJText.matches(regexURL)
+          || textFromJText.matches(regexURL2)
+          || textFromJText.matches(regexURL3)
+          || textFromJText.matches(regexURL4)) {
 
         Document doc = Jsoup.connect(textFromJText)
             .data("query", "Java")
@@ -177,10 +181,9 @@ public class Main extends JFrame {
             .cookie("auth", "token")
             .get();
         //Парсит название
-        String title = doc.title();
-        String title2 = title.replaceAll(":", " ");
-        int titleIndex = title2.indexOf("—");
-        String textTitle = title2.substring(0, titleIndex - 1);
+        String title = doc.title().replaceAll(":", " ");
+        int titleIndex = title.indexOf("—");
+        String textTitle = title.substring(0, titleIndex - 1);
 
         URL url;
         InputStream is = null;
@@ -193,9 +196,25 @@ public class Main extends JFrame {
         FileWriter writerFile = new FileWriter(pathForHTML, StandardCharsets.UTF_8);
 
         //Сохраняем просто в файл site.html
+        //форматируем текст
         while ((lines = brs.readLine()) != null) {
-          writerFile
-              .write(lines.replaceAll("&nbsp;", "").trim() + System.getProperty("line.separator"));
+        writerFile.write(lines
+            .replaceAll("&nbsp;", "")
+            .trim()
+            .replaceAll("</b>", "")
+            .replaceAll("</div>", "")
+            .replaceAll("</i>", "")
+            .replaceAll("<i>", "")
+            .replaceAll("<p align=\"center\" style=\"margin: 0;\">", "")
+            .replaceAll("</p>", "")
+            .replaceAll("<div class=\"part-comment-bottom mx-10 mx-xs-5\">", "")
+            .replaceAll("<strong>", "")
+            .replaceAll("</strong>", "")
+            .replaceAll("<div class=\"urlize\">", "")
+            .replaceAll("<br />", "")
+            .replaceAll("<p align=\"right\" style=\"margin: 0;\"><b>", "")
+            .replaceAll("<p align=\"right\" style=\"margin: 0;\">", "")
+            + System.getProperty("line.separator"));
         }
 
         is.close();
@@ -236,6 +255,7 @@ public class Main extends JFrame {
 
   public static void delete(String filePathIn, String filePathOut, int toRemove) {
     int count = 0;
+    int first = 0;
     File inputFile = new File(filePathIn);
     File tempFile = new File(filePathOut);
     try {
@@ -247,8 +267,20 @@ public class Main extends JFrame {
       while ((currentLine = reader.readLine()) != null) {
         count++;
         if (count < toRemove) {
+
         }
-        if (count >= toRemove) {
+        if (count > toRemove) {
+          if (first < 1) {
+            first++;
+            int length = currentLine.length();
+            int symbol = currentLine.lastIndexOf(">") + 1;
+            String firstLine = currentLine.substring(symbol, length);
+            bufferWriter.write(firstLine + System.getProperty("line.separator"));
+            continue;
+          }
+          if (first > 1) {
+            bufferWriter.write(currentLine.trim() + System.getProperty("line.separator"));
+          }
           bufferWriter.write(currentLine.trim() + System.getProperty("line.separator"));
         }
       }
@@ -290,7 +322,7 @@ public class Main extends JFrame {
     try {
       File inputFile = new File(filePathIn);
       BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-      String needWorld = "itemprop=\"articleBody\"";
+      String needWorld = "articleBody";
       while (!reader.readLine().trim().contains(needWorld)) {
         lineCount++;
       }
@@ -313,7 +345,7 @@ public class Main extends JFrame {
         lineCount++;
       }
       reader.close();
-      return lineCount;
+      return lineCount - 2;
     } catch (Exception e) {
       e.printStackTrace();
     }

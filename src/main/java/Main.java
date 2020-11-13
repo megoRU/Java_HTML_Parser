@@ -177,10 +177,9 @@ public class Main extends JFrame {
             .cookie("auth", "token")
             .get();
         //Парсит название
-        String title = doc.title();
-        String title2 = title.replaceAll(":", " ");
-        int titleIndex = title2.indexOf("—");
-        String textTitle = title2.substring(0, titleIndex - 1);
+        String title = doc.title().replaceAll(":", " ");
+        int titleIndex = title.indexOf("—");
+        String textTitle = title.substring(0, titleIndex - 1);
 
         URL url;
         InputStream is = null;
@@ -194,8 +193,7 @@ public class Main extends JFrame {
 
         //Сохраняем просто в файл site.html
         while ((lines = brs.readLine()) != null) {
-          writerFile
-              .write(lines.replaceAll("&nbsp;", "").trim() + System.getProperty("line.separator"));
+        writerFile.write(lines.replaceAll("&nbsp;", "").trim() + System.getProperty("line.separator"));
         }
 
         is.close();
@@ -236,6 +234,7 @@ public class Main extends JFrame {
 
   public static void delete(String filePathIn, String filePathOut, int toRemove) {
     int count = 0;
+    int first = 0;
     File inputFile = new File(filePathIn);
     File tempFile = new File(filePathOut);
     try {
@@ -249,6 +248,13 @@ public class Main extends JFrame {
         if (count < toRemove) {
         }
         if (count >= toRemove) {
+          if (first < 1) {
+            first++;
+            bufferWriter.write(currentLine.trim() + System.getProperty("line.separator"));
+          }
+          if (first > 1) {
+            bufferWriter.write(currentLine.trim() + System.getProperty("line.separator"));
+          }
           bufferWriter.write(currentLine.trim() + System.getProperty("line.separator"));
         }
       }

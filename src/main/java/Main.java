@@ -211,6 +211,7 @@ public class Main extends JFrame {
               .replaceAll("</strong>", "")
               .replaceAll("<div class=\"urlize\">", "")
               .replaceAll("<br />", "")
+              .replaceAll("<br>", "")
               .replaceAll("<p align=\"right\" style=\"margin: 0;\"><b>", "")
               .replaceAll("<p align=\"right\" style=\"margin: 0;\">", "")
               .replaceAll("</s>", "")
@@ -272,7 +273,9 @@ public class Main extends JFrame {
         }
         if (count > toRemove) {
           if (first < 1) {
-            String firstLine = currentLine.replaceAll("data-is-adult=\"1\" itemprop=\"articleBody\">", "");
+            String firstLine = currentLine
+                .replaceAll("data-is-adult=\"1\" itemprop=\"articleBody\">", "")
+                .replaceAll("data-is-adult=\"\" itemprop=\"articleBody\">", "");
             bufferWriter.write(firstLine + System.getProperty("line.separator"));
             bufferWriter.write(System.getProperty("line.separator"));
           }

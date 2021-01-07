@@ -218,7 +218,7 @@ public class Main extends JFrame {
         }
 
         if (OS_NAME.contains("linux")) {
-          pathDesktopParse = "/home/megoru/Desktop/site.txt";
+          pathDesktopParse = "/home/" + USER_NAME + "/Desktop/site.txt";
           pathBeforeDesktopParse = "/home/" + USER_NAME + "/Desktop/" + textTitle + "NOT_FINAL" + ".txt";
           pathLastDesktopParse = "/home/" + USER_NAME + "/Desktop/" + textTitle + ".txt";
         }

@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Locale;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -26,19 +27,19 @@ import org.jsoup.nodes.Document;
 
 public class Main extends JFrame {
 
-  private static final String userName = System.getProperty("user.name");
+  private static final String USER_NAME = System.getProperty("user.name");
+  private static final String OS_NAME = System.getProperty("os.name").toLowerCase(Locale.ROOT);
   private static final String regexURL = "https?:\\/\\/?[\\dfincbook.net\\/readfic]+\\/[0-9]+\\/[0-9]+[#a-z_]+";
   private static final String regexURL2 = "https?:\\/\\/?[\\dfincbook.net\\/readfic]+\\/[0-9]+\\/[0-9]+";
   private static final String regexURL3 = "https?:\\/\\/?[\\dfincbook.net\\/readfic]+\\/[0-9]+";
   private static final String regexURL4 = "https?:\\/\\/?[\\dfincbook.net\\/readfic]+\\/[0-9]+.+";
-  private static final String pathForHTML = "C:/Users/" + userName + "/Desktop/site.txt";
-
+  private static String pathDesktopParse = null;
+  private static String pathBeforeDesktopParse = null;
+  private static String pathLastDesktopParse = null;
   private javax.swing.JTextField jTextField1;
 
   public Main() {
     initComponents();
-    Toolkit toolkit = Toolkit.getDefaultToolkit();
-    Dimension screenSize = toolkit.getScreenSize();
     JFrame frame = new JFrame("ficbook.net парсер");
     frame.setSize(550, 600);
     setResizable(false);
@@ -48,6 +49,23 @@ public class Main extends JFrame {
         dim.height / 2 - this.getSize().height / 2);
     super.setTitle("ficbook.net парсер");
     setIconImage(getImage());
+  }
+
+  public static void main(String[] args) {
+    try {
+      for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager
+          .getInstalledLookAndFeels()) {
+        if ("Nimbus".equals(info.getName())) {
+          javax.swing.UIManager.setLookAndFeel(info.getClassName());
+          break;
+        }
+      }
+    } catch (ClassNotFoundException | IllegalAccessException | UnsupportedLookAndFeelException | InstantiationException ex) {
+      java.util.logging.Logger.getLogger(Main.class.getName())
+          .log(java.util.logging.Level.SEVERE, null, ex);
+    }
+
+    java.awt.EventQueue.invokeLater(() -> new Main().setVisible(true));
   }
 
   private Image getImage() {
@@ -177,30 +195,49 @@ public class Main extends JFrame {
         Document doc = Jsoup.connect(textFromJText)
             .data("query", "Java")
             .userAgent(
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36")
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36")
             .cookie("auth", "token")
             .get();
         //Парсит название \ / : * ? " < > |
         String title = doc.title().replaceAll(":", " ")
-                .replaceAll("/", "")
-                .replaceAll("\\*", "")
-                .replaceAll("\"", "")
-                .replaceAll("\"", "")
-                .replaceAll("\\?", "")
-                .replaceAll("<", "")
-                .replaceAll(">", "");
+            .replaceAll("/", "")
+            .replaceAll("\\*", "")
+            .replaceAll("\"", "")
+            .replaceAll("\"", "")
+            .replaceAll("\\?", "")
+            .replaceAll("<", "")
+            .replaceAll(">", "");
         int titleIndex = title.indexOf("—");
         String textTitle = title.substring(0, titleIndex - 1);
 
+        //Фикс для разных OS чтобы нормально файлы сохранять. Такой вот супер костыль
+        if (OS_NAME.contains("win")) {
+          pathDesktopParse = "C:/Users/" + USER_NAME + "/Desktop/site.txt";
+          pathBeforeDesktopParse = "C:/Users/" + USER_NAME + "/Desktop/" + textTitle + "NOT_FINAL" + ".txt";
+          pathLastDesktopParse = "C:/Users/" + USER_NAME + "/Desktop/" + textTitle + ".txt";
+        }
+
+        if (OS_NAME.contains("linux")) {
+          pathDesktopParse = "/home/megoru/Desktop/site.txt";
+          pathBeforeDesktopParse = "/home/" + USER_NAME + "/Desktop/" + textTitle + "NOT_FINAL" + ".txt";
+          pathLastDesktopParse = "/home/" + USER_NAME + "/Desktop/" + textTitle + ".txt";
+        }
+
+        if (OS_NAME.contains("mac")) {
+          pathDesktopParse = "/Users/" + USER_NAME + "/Desktop/site.txt";
+          pathBeforeDesktopParse = "/Users/" + USER_NAME + "/Desktop/" + textTitle + "NOT_FINAL" + ".txt";
+          pathLastDesktopParse = "/Users/" + USER_NAME + "/Desktop/" + textTitle + ".txt";
+        }
+
         URL url;
-        InputStream is = null;
+        InputStream is;
         BufferedReader brs;
         String lines;
         //"Крадём html"
         url = new URL(textFromJText);
         is = url.openStream();
         brs = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-        FileWriter writerFile = new FileWriter(pathForHTML, StandardCharsets.UTF_8);
+        FileWriter writerFile = new FileWriter(pathDesktopParse, StandardCharsets.UTF_8);
         //Сохраняем просто в файл site.html
         //форматируем текст
         while ((lines = brs.readLine()) != null) {
@@ -231,27 +268,22 @@ public class Main extends JFrame {
         brs.close();
         writerFile.close();
         //Путь для сохранения почти готового результата
-        String pathBeforeSave = "C:/Users/" + userName + "/Desktop/" + textTitle + "NOT_FINAL" + ".txt";
 
         //Возвращает индекс чтобы удалять до или после
-        int valueToDeleteFirst = linesFirst(pathForHTML); // + 3
-        delete(pathForHTML, pathBeforeSave, valueToDeleteFirst);
+        int valueToDeleteFirst = linesFirst(pathDesktopParse); // + 3
+        delete(pathDesktopParse, pathBeforeDesktopParse, valueToDeleteFirst);
 
         //Возвращает индекс чтобы удалять до или после
-        int valueToDeleteSecond = linesSecond(pathBeforeSave);
+        int valueToDeleteSecond = linesSecond(pathBeforeDesktopParse);
 
-        deleteSecond(pathBeforeSave, "C:/Users/" + userName + "/Desktop/" + textTitle + ".txt", valueToDeleteSecond);
+        deleteSecond(pathBeforeDesktopParse, pathLastDesktopParse, valueToDeleteSecond);
 
         //Удаление лишних файлов в процессе работы
-        Path path = Paths.get(pathBeforeSave);
-        Path path2 = Paths.get(pathForHTML);
+        Path path = Paths.get(pathBeforeDesktopParse);
+        Path path2 = Paths.get(pathDesktopParse);
         try {
           Files.deleteIfExists(path);
           Files.deleteIfExists(path2);
-
-          jTextField1.setText("");
-          jTextField1.setText("Успешно");
-          Thread.sleep(1500);
           jTextField1.setText("");
         } catch (Exception exception) {
           exception.printStackTrace();
@@ -357,22 +389,5 @@ public class Main extends JFrame {
       e.printStackTrace();
     }
     return 0;
-  }
-
-  public static void main(String[] args) {
-    try {
-      for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager
-          .getInstalledLookAndFeels()) {
-        if ("Nimbus".equals(info.getName())) {
-          javax.swing.UIManager.setLookAndFeel(info.getClassName());
-          break;
-        }
-      }
-    } catch (ClassNotFoundException | IllegalAccessException | UnsupportedLookAndFeelException | InstantiationException ex) {
-      java.util.logging.Logger.getLogger(Main.class.getName())
-          .log(java.util.logging.Level.SEVERE, null, ex);
-    }
-
-    java.awt.EventQueue.invokeLater(() -> new Main().setVisible(true));
   }
 }

@@ -193,7 +193,6 @@ public class Main extends JFrame {
           || textFromJText.matches(regexURL4)) {
 
         Document doc = Jsoup.connect(textFromJText)
-            .data("query", "Java")
             .userAgent(
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36")
             .cookie("auth", "token")
@@ -244,6 +243,7 @@ public class Main extends JFrame {
           writerFile.write(lines
               .replaceAll("&nbsp;", "")
               .trim()
+              .replaceAll("<b>", "")
               .replaceAll("</b>", "")
               .replaceAll("</div>", "")
               .replaceAll("</i>", "")

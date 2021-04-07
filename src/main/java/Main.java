@@ -9,9 +9,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,8 +19,6 @@ import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.UnsupportedLookAndFeelException;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 public class Main extends JFrame {
 
@@ -192,81 +187,37 @@ public class Main extends JFrame {
           || textFromJText.matches(regexURL3)
           || textFromJText.matches(regexURL4)) {
 
-        Document doc = Jsoup.connect(textFromJText)
-            .userAgent(
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36")
-            .cookie("auth", "token")
-            .get();
-        //Парсит название \ / : * ? " < > |
-        String title = doc.title().replaceAll(":", " ")
-            .replaceAll("/", "")
-            .replaceAll("\\*", "")
-            .replaceAll("\"", "")
-            .replaceAll("\"", "")
-            .replaceAll("\\?", "")
-            .replaceAll("<", "")
-            .replaceAll(">", "");
-        int titleIndex = title.indexOf("—");
-        String textTitle = title.substring(0, titleIndex - 1);
+        //C:\java_GitHub\ficbook.net_Parser\src\main\java\main.py
+        final String dir = System.getProperty("user.dir");
+        System.out.println(dir);
+
+        //Запускает python скрипт
+        Process process = Runtime.getRuntime().exec("python " + dir +"/main" + ".py");
+
+        Thread.sleep(500);
+
+        String textTitle = "ficbook_text";
+
 
         //Фикс для разных OS чтобы нормально файлы сохранять. Такой вот супер костыль
         if (OS_NAME.contains("win")) {
-          pathDesktopParse = "C:/Users/" + USER_NAME + "/Desktop/site.txt";
+          pathDesktopParse = "C:/Users/" + USER_NAME + "/Desktop/ficbook_text.txt";
           pathBeforeDesktopParse = "C:/Users/" + USER_NAME + "/Desktop/" + textTitle + "NOT_FINAL" + ".txt";
-          pathLastDesktopParse = "C:/Users/" + USER_NAME + "/Desktop/" + textTitle + ".txt";
+          pathLastDesktopParse = "C:/Users/" + USER_NAME + "/Desktop/" + textTitle + "FINAL.txt";
         }
 
         if (OS_NAME.contains("linux")) {
-          pathDesktopParse = "/home/" + USER_NAME + "/Desktop/site.txt";
+          pathDesktopParse = "/home/" + USER_NAME + "/Desktop/ficbook_text.txt";
           pathBeforeDesktopParse = "/home/" + USER_NAME + "/Desktop/" + textTitle + "NOT_FINAL" + ".txt";
-          pathLastDesktopParse = "/home/" + USER_NAME + "/Desktop/" + textTitle + ".txt";
+          pathLastDesktopParse = "/home/" + USER_NAME + "/Desktop/" + textTitle + "FINAL.txt";
         }
 
         if (OS_NAME.contains("mac")) {
-          pathDesktopParse = "/Users/" + USER_NAME + "/Desktop/site.txt";
+          pathDesktopParse = "/Users/" + USER_NAME + "/Desktop/ficbook_text.txt";
           pathBeforeDesktopParse = "/Users/" + USER_NAME + "/Desktop/" + textTitle + "NOT_FINAL" + ".txt";
-          pathLastDesktopParse = "/Users/" + USER_NAME + "/Desktop/" + textTitle + ".txt";
+          pathLastDesktopParse = "/Users/" + USER_NAME + "/Desktop/" + textTitle + "FINAL.txt";
         }
 
-        URL url;
-        InputStream is;
-        BufferedReader brs;
-        String lines;
-        //"Крадём html"
-        url = new URL(textFromJText);
-        is = url.openStream();
-        brs = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-        FileWriter writerFile = new FileWriter(pathDesktopParse, StandardCharsets.UTF_8);
-        //Сохраняем просто в файл site.html
-        //форматируем текст
-        while ((lines = brs.readLine()) != null) {
-          writerFile.write(lines
-              .replaceAll("&nbsp;", "")
-              .trim()
-              .replaceAll("<b>", "")
-              .replaceAll("</b>", "")
-              .replaceAll("</div>", "")
-              .replaceAll("</i>", "")
-              .replaceAll("<i>", "")
-              .replaceAll("<p align=\"center\" style=\"margin: 0;\">", "")
-              .replaceAll("</p>", "")
-              .replaceAll("<div class=\"part-comment-bottom mx-10 mx-xs-5\">", "")
-              .replaceAll("<strong>", "")
-              .replaceAll("</strong>", "")
-              .replaceAll("<div class=\"urlize\">", "")
-              .replaceAll("<br />", "")
-              .replaceAll("<br>", "")
-              .replaceAll("<p align=\"right\" style=\"margin: 0;\"><b>", "")
-              .replaceAll("<p align=\"right\" style=\"margin: 0;\">", "")
-              .replaceAll("</s>", "")
-              .replaceAll("<s>", "")
-
-              + System.getProperty("line.separator"));
-        }
-
-        is.close();
-        brs.close();
-        writerFile.close();
         //Путь для сохранения почти готового результата
 
         //Возвращает индекс чтобы удалять до или после
@@ -274,8 +225,9 @@ public class Main extends JFrame {
         delete(pathDesktopParse, pathBeforeDesktopParse, valueToDeleteFirst);
 
         //Возвращает индекс чтобы удалять до или после
-        int valueToDeleteSecond = linesSecond(pathBeforeDesktopParse);
+        int valueToDeleteSecond = linesSecond(pathBeforeDesktopParse); //тут надо проверить
 
+        System.out.println(pathLastDesktopParse);
         deleteSecond(pathBeforeDesktopParse, pathLastDesktopParse, valueToDeleteSecond);
 
         //Удаление лишних файлов в процессе работы
@@ -289,7 +241,7 @@ public class Main extends JFrame {
           exception.printStackTrace();
         }
       }
-    } catch (IOException e) {
+    } catch (IOException | InterruptedException e) {
       e.printStackTrace();
     }
   }
@@ -346,7 +298,26 @@ public class Main extends JFrame {
         if (count > toRemove) {
         }
         if (count <= toRemove) {
-          bufferWriter.write(currentLine.trim() + System.getProperty("line.separator"));
+          bufferWriter.write(currentLine
+              .trim()
+              .replaceAll("&nbsp;", "")
+              .replaceAll("<b>", "")
+              .replaceAll("</b>", "")
+              .replaceAll("</div>", "")
+              .replaceAll("</i>", "")
+              .replaceAll("<i>", "")
+              .replaceAll("<p align=\"center\" style=\"margin: 0;\">", "")
+              .replaceAll("</p>", "")
+              .replaceAll("<div class=\"part-comment-bottom mx-10 mx-xs-5\">", "")
+              .replaceAll("<strong>", "")
+              .replaceAll("</strong>", "")
+              .replaceAll("<div class=\"urlize\">", "")
+              .replaceAll("<br />", "")
+              .replaceAll("<br>", "")
+              .replaceAll("<p align=\"right\" style=\"margin: 0;\"><b>", "")
+              .replaceAll("<p align=\"right\" style=\"margin: 0;\">", "")
+              .replaceAll("</s>", "")
+              .replaceAll("<s>", "") + System.getProperty("line.separator"));
         }
       }
       bufferWriter.close();

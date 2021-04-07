@@ -200,7 +200,6 @@ public class Main extends JFrame {
                 + " "
                 + textFromJText);
         Thread.sleep(500);
-        String textTitle = "ficbook_parse";
 
         getTitleFromFile(dir + "/ficbook_parse.txt");
 
@@ -213,14 +212,14 @@ public class Main extends JFrame {
 
         if (OS_NAME.contains("linux")) {
           pathDesktopParse = dir + "/ficbook_text.txt";
-          pathBeforeDesktopParse = "/home/" + USER_NAME + "/Desktop/" + textTitle + "NOT_FINAL" + ".txt";
-          pathLastDesktopParse = "/home/" + USER_NAME + "/Desktop/" + textTitle + "FINAL.txt";
+          pathBeforeDesktopParse = "/home/" + USER_NAME + "/Desktop/" + title + "NOT_FINAL" + ".txt";
+          pathLastDesktopParse = "/home/" + USER_NAME + "/Desktop/" + title + "FINAL.txt";
         }
 
         if (OS_NAME.contains("mac")) {
           pathDesktopParse = dir + "/ficbook_text.txt";
-          pathBeforeDesktopParse = "/Users/" + USER_NAME + "/Desktop/" + textTitle + "NOT_FINAL" + ".txt";
-          pathLastDesktopParse = "/Users/" + USER_NAME + "/Desktop/" + textTitle + "FINAL.txt";
+          pathBeforeDesktopParse = "/Users/" + USER_NAME + "/Desktop/" + title + "NOT_FINAL" + ".txt";
+          pathLastDesktopParse = "/Users/" + USER_NAME + "/Desktop/" + title + "FINAL.txt";
         }
 
         //Путь для сохранения почти готового результата

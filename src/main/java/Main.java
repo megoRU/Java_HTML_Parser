@@ -32,6 +32,7 @@ public class Main extends JFrame {
   private static String pathBeforeDesktopParse = null;
   private static String pathLastDesktopParse = null;
   private javax.swing.JTextField jTextField1;
+  private static String title = null;
 
   public Main() {
     initComponents();
@@ -187,33 +188,37 @@ public class Main extends JFrame {
           || textFromJText.matches(regexURL3)
           || textFromJText.matches(regexURL4)) {
 
-        //C:\java_GitHub\ficbook.net_Parser\src\main\java\main.py
+        //C:\java_GitHub\ficbook.net_Parser\src\main\java\ficbook_parser_cloudflare.py
         final String dir = System.getProperty("user.dir");
         System.out.println(dir);
 
         //Запускает python скрипт
-        Process process = Runtime.getRuntime().exec("python " + dir +"/main" + ".py");
-
+        Process process = Runtime.getRuntime().exec(
+            "python " + dir + "/ficbook_parser_cloudflare.py "
+                + dir +
+                "\\ficbook_parse.txt"
+                + " "
+                + textFromJText);
         Thread.sleep(500);
+        String textTitle = "ficbook_parse";
 
-        String textTitle = "ficbook_text";
-
+        getTitleFromFile(dir + "/ficbook_parse.txt");
 
         //Фикс для разных OS чтобы нормально файлы сохранять. Такой вот супер костыль
         if (OS_NAME.contains("win")) {
-          pathDesktopParse = "C:/Users/" + USER_NAME + "/Desktop/ficbook_text.txt";
-          pathBeforeDesktopParse = "C:/Users/" + USER_NAME + "/Desktop/" + textTitle + "NOT_FINAL" + ".txt";
-          pathLastDesktopParse = "C:/Users/" + USER_NAME + "/Desktop/" + textTitle + "FINAL.txt";
+          pathDesktopParse = dir + "/ficbook_parse.txt";
+          pathBeforeDesktopParse = "C:/Users/" + USER_NAME + "/Desktop/" + title + "NOT_FINAL" + ".txt";
+          pathLastDesktopParse = "C:/Users/" + USER_NAME + "/Desktop/" + title + ".txt";
         }
 
         if (OS_NAME.contains("linux")) {
-          pathDesktopParse = "/home/" + USER_NAME + "/Desktop/ficbook_text.txt";
+          pathDesktopParse = dir + "/ficbook_text.txt";
           pathBeforeDesktopParse = "/home/" + USER_NAME + "/Desktop/" + textTitle + "NOT_FINAL" + ".txt";
           pathLastDesktopParse = "/home/" + USER_NAME + "/Desktop/" + textTitle + "FINAL.txt";
         }
 
         if (OS_NAME.contains("mac")) {
-          pathDesktopParse = "/Users/" + USER_NAME + "/Desktop/ficbook_text.txt";
+          pathDesktopParse = dir + "/ficbook_text.txt";
           pathBeforeDesktopParse = "/Users/" + USER_NAME + "/Desktop/" + textTitle + "NOT_FINAL" + ".txt";
           pathLastDesktopParse = "/Users/" + USER_NAME + "/Desktop/" + textTitle + "FINAL.txt";
         }
@@ -245,6 +250,36 @@ public class Main extends JFrame {
       e.printStackTrace();
     }
   }
+
+  public static void getTitleFromFile(String filePathIn) {
+    File inputFile = new File(filePathIn);
+    try {
+      BufferedReader reader = new BufferedReader(new FileReader(inputFile, StandardCharsets.UTF_8));
+      String currentLine;
+      while ((currentLine = reader.readLine()) != null) {
+        if (currentLine.contains("<h2 itemprop=\"headline\">") || currentLine.contains("headline")) {
+          title = currentLine
+              .trim()
+              .replaceAll("<h2 itemprop=\"headline\">", "")
+              .replaceAll("</h2>", "")
+              .replaceAll(":", " ")
+              .replaceAll("/", "")
+              .replaceAll("\\*", "")
+              .replaceAll("\"", "")
+              .replaceAll("\"", "")
+              .replaceAll("\\?", "")
+              .replaceAll("<", "")
+              .replaceAll(">", "")
+              .trim();
+        }
+      }
+      reader.close();
+    } catch (IOException fileNotFoundException) {
+      fileNotFoundException.printStackTrace();
+    }
+
+  }
+
 
   public static void delete(String filePathIn, String filePathOut, int toRemove) {
     int count = 0;

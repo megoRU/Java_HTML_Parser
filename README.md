@@ -23,8 +23,8 @@
 
 ## FAQ & Troubleshooting
 
-• На Windows/MacOS/Linux установите [Oracle Java](https://www.oracle.com/java/technologies/javase-downloads.html) или [OpenJDK](https://adoptopenjdk.net/). <br><br>
-• На Windows/MacOS/Linux установите [Python 3.9+](https://www.python.org/downloads/)
+• На Windows/MacOS/Linux установите [Oracle Java](https://www.oracle.com/java/technologies/javase-downloads.html) или [OpenJDK](https://adoptopenjdk.net/). <br>
+• На Windows/MacOS/Linux установите [Python 3.9+](https://www.python.org/downloads/). <br><br>
 
 P. S. Если Вы используете `OpenJDK` и у Вас не открывается программа по двойному клику. Вам нужно скачать и запустить сначало это: [Jarfix 3.0.0](https://www.heise.de/download/product/jarfix-41657/download)
 

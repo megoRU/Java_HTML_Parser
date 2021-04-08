@@ -189,17 +189,34 @@ public class Main extends JFrame {
           || textFromJText.matches(regexURL4)) {
 
         //C:\java_GitHub\ficbook.net_Parser\src\main\java\ficbook_parser_cloudflare.py
-        final String dir = System.getProperty("user.dir");
+        String dir = System.getProperty("user.dir");
         System.out.println(dir);
 
-        //Запускает python скрипт
-        Process process = Runtime.getRuntime().exec(
-            "python " + dir + "/ficbook_parser_cloudflare.py "
-                + dir +
-                "\\ficbook_parse.txt"
-                + " "
-                + textFromJText);
-        Thread.sleep(500);
+        if (dir.equals("/home/" + USER_NAME)) {
+          dir = dir + "/Desktop";
+        }
+
+        if (OS_NAME.contains("linux") || OS_NAME.contains("mac")) {
+          //Запускает python скрипт
+          Process process = Runtime.getRuntime().exec(
+              "python3 " + dir + "/ficbook_parser_cloudflare.py "
+                  + dir +
+                  "/ficbook_parse.txt"
+                  + " "
+                  + textFromJText);
+          Thread.sleep(800);
+        }
+
+        if (OS_NAME.contains("win")) {
+          //Запускает python скрипт
+          Process process = Runtime.getRuntime().exec(
+              "python " + dir + "/ficbook_parser_cloudflare.py "
+                  + dir +
+                  "/ficbook_parse.txt"
+                  + " "
+                  + textFromJText);
+          Thread.sleep(800);
+        }
 
         getTitleFromFile(dir + "/ficbook_parse.txt");
 
@@ -211,13 +228,13 @@ public class Main extends JFrame {
         }
 
         if (OS_NAME.contains("linux")) {
-          pathDesktopParse = dir + "/ficbook_text.txt";
+          pathDesktopParse = dir + "/ficbook_parse.txt";
           pathBeforeDesktopParse = "/home/" + USER_NAME + "/Desktop/" + title + "NOT_FINAL" + ".txt";
           pathLastDesktopParse = "/home/" + USER_NAME + "/Desktop/" + title + "FINAL.txt";
         }
 
         if (OS_NAME.contains("mac")) {
-          pathDesktopParse = dir + "/ficbook_text.txt";
+          pathDesktopParse = dir + "/ficbook_parse.txt";
           pathBeforeDesktopParse = "/Users/" + USER_NAME + "/Desktop/" + title + "NOT_FINAL" + ".txt";
           pathLastDesktopParse = "/Users/" + USER_NAME + "/Desktop/" + title + "FINAL.txt";
         }

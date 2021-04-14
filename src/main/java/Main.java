@@ -273,9 +273,12 @@ public class Main extends JFrame {
       BufferedReader reader = new BufferedReader(new FileReader(inputFile, StandardCharsets.UTF_8));
       String currentLine;
       while ((currentLine = reader.readLine()) != null) {
-        if (currentLine.contains("<h2 itemprop=\"headline\">") || currentLine.contains("headline")) {
+        if (currentLine.contains("<title>")) {
           title = currentLine
               .trim()
+              .replaceAll("<title>", "")
+              .replaceAll("</title>", "")
+              .replaceAll("    ", "")
               .replaceAll("<h2 itemprop=\"headline\">", "")
               .replaceAll("</h2>", "")
               .replaceAll(":", " ")
@@ -295,7 +298,6 @@ public class Main extends JFrame {
     }
 
   }
-
 
   public static void delete(String filePathIn, String filePathOut, int toRemove) {
     int count = 0;
